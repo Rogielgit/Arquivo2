@@ -3,19 +3,22 @@
 #include <string.h>
 #include "livro.h"
 
-char* Le_String(){
+char* Le_String(){ //coloca '|' e '\0' no fim da string lida
     char *str,c;
-    int tamanho = 0, i = 1;
+    int tamanho = 0, i = 3;
     str = (char*)malloc(sizeof(char));
 
     while(c!='\n'){
         c = getc(stdin);     //lendo caractere do teclado
+        if(c=='\n')
+            break;
         str = (char*)realloc(str,i*sizeof(char)); //realocando espaço
-        str[tamanho] = c;  //store read character by making pointer point to c
+        str[tamanho] = c;  //grava caractere lido
         i++;
         tamanho++;
     }
-    str[tamanho]='\0';   //coloca '\0'no fim da string
+    str[tamanho]='\0'; //coloca '\0'no fim da string
+    str[tamanho++] = '|';
 
     return str;
 }
@@ -55,8 +58,8 @@ void Insere(){
         printf("ERRO AO ABRIR ARQUIVO!!");
         return;
     }
-    Livro lv;
-    Ler_dados_livro(&lv);
+    /*Livro lv;
+    Ler_dados_livro(&lv);*/
 
 }
 
