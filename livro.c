@@ -18,7 +18,8 @@ char* Le_String(){ //coloca '|' e '\0' no fim da string lida
         tamanho++;
     }
     str[tamanho]='\0'; //coloca '\0'no fim da string
-    str[tamanho++] = '|';
+    tamanho++;
+    str[tamanho] = '|';
 
     return str;
 }
@@ -53,17 +54,54 @@ void fflush_in(){// função para limpar o teclado
 }
 
 void Insere(){
+    //Se o arquivo estiver vazio
+    //Se não, procura registro removido
+    //se nao houver, insere no final
+
     FILE *arq = fopen("livraria.txt", "r+");
     if(arq == NULL){
         printf("ERRO AO ABRIR ARQUIVO!!");
         return;
     }
+
     /*Livro lv;
     Ler_dados_livro(&lv);*/
 
 }
 
+int reglen(Livro *L){ //Retorna o numero de bytes de um registro passado(conta os delimitadores mas nao conta os \0)
+    int cont = 0;
+    int i = 0;
 
+    while(L->TITLE[i] != '\0'){
+        cont += sizeof(char);
+        i++;
+    }
+
+    i = 0;
+    while(L->AUTHOR[i] != '\0'){
+        cont += sizeof(char);
+        i++;
+    }
+
+    i = 0;
+    while(L->PUBLISHER[i] != '\0'){
+        cont += sizeof(char);
+        i++;
+    }
+
+    i = 0;
+    while(L->LANGUAGE[i] != '\0'){
+        cont += sizeof(char);
+        i++;
+    }
+    cont += 2*sizeof(int); //YEAR e PAGES
+    cont += sizeof(float); //PRICE
+
+    cont += 7*sizeof(char); //delimitadores
+
+    return cont;
+}
 
 void print_livro(Livro lv){
     printf("\n############################\n\n");

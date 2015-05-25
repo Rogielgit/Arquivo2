@@ -10,13 +10,10 @@ int main() {
         printf("Erro ao abrir arquivo!!!");
 
     Livro L;
-
-    char *s = Le_String();
-    printf("%s", s);
-    fwrite(s, sizeof(char), strlen(s), arq);
-    //Ler_dados_livro(&L);
+    //fwrite(s, sizeof(char), strlen(s), arq);
+    Ler_dados_livro(&L);
+    printf("%d",reglen(&L));
     //print_livro(L);
-    //printf("%s", L.TITLE);
 
 system("pause");
 

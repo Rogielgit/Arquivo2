@@ -8,7 +8,7 @@ typedef struct {
     int YEAR;
     char *LANGUAGE;
     int PAGES;
-    double PRICE;
+    float PRICE;
 } Livro;
 
 char* Le_String();
