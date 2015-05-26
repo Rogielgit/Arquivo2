@@ -3,9 +3,9 @@
 #include <string.h>
 #include "livro.h"
 
-char* Le_String(){ //coloca '|' e '\0' no fim da string lida
+char* Le_String(){ //coloca '\0' no fim da string lida
     char *str,c;
-    int tamanho = 0, i = 3;
+    int tamanho = 0, i = 1;
     str = (char*)malloc(sizeof(char));
 
     while(c!='\n'){
@@ -18,9 +18,6 @@ char* Le_String(){ //coloca '|' e '\0' no fim da string lida
         tamanho++;
     }
     str[tamanho]='\0'; //coloca '\0'no fim da string
-    tamanho++;
-    str[tamanho] = '|';
-
     return str;
 }
 
@@ -53,16 +50,59 @@ void fflush_in(){// função para limpar o teclado
    while( (ch = fgetc(stdin)) != EOF && ch != '\n' ){}
 }
 
-void Insere(){
+void Insere(Livro *L){
     //Se o arquivo estiver vazio
     //Se não, procura registro removido
     //se nao houver, insere no final
-
     FILE *arq = fopen("livraria.txt", "r+");
     if(arq == NULL){
         printf("ERRO AO ABRIR ARQUIVO!!");
         return;
     }
+    int tam_registro = -1;
+    int aux;
+    char removido;
+    char c = '|';
+
+    fseek(arq, 0, SEEK_SET); //colocando ponteiro no inicio do arquivo
+    fread(&tam_registro, sizeof(int), 1, arq); //lendo primeiro int do arquivo(tamanho do primeiro registro)
+    if(tam_registro == -1){ //se o arquivo estiver vazio
+            aux = reglen(L);
+            fprintf(arq, "%d", aux); //escrevendo tamanho do registro a ser inserido
+
+            fwrite(L->TITLE, sizeof(char), strlen(L->TITLE), arq);
+            fprintf(arq, "%c", c); //colocando delimitador
+
+            fwrite(L->AUTHOR, sizeof(char), strlen(L->AUTHOR), arq);
+            fprintf(arq, "%c", c); //colocando delimitador
+
+            fwrite(L->PUBLISHER, sizeof(char), strlen(L->PUBLISHER), arq);
+            fprintf(arq, "%c", c); //colocando delimitador
+
+            fprintf(arq, "%d", L->YEAR);
+            fprintf(arq, "%c", c); //colocando delimitador
+
+            fwrite(L->LANGUAGE, sizeof(char), strlen(L->LANGUAGE), arq);
+            fprintf(arq, "%c", c); //colocando delimitador
+
+            fprintf(arq, "%d", L->PAGES);
+            fprintf(arq, "%c", c); //colocando delimitador
+
+            fprintf(arq, "%f", L->PRICE);
+            fprintf(arq, "%c", c); //colocando delimitador
+            return;
+    }
+    else{ //Se nao estiver vazio, procura primeira remoção logica para inserir
+    //checa se o primeiro registro foi removido
+    //se ja, confere tamanho livre no registro
+    //      se o registro a ser inserido couber no registro removido, insere
+    //se nao, passa para proximo
+    }
+
+    else{ //se nenhuma das opçoes der certo, insere no final do arquivo
+
+    }
+
 
     /*Livro lv;
     Ler_dados_livro(&lv);*/

@@ -12,7 +12,10 @@ int main() {
     Livro L;
     //fwrite(s, sizeof(char), strlen(s), arq);
     Ler_dados_livro(&L);
-    printf("%d",reglen(&L));
+    Insere(&L);
+
+    //printf("%s", Le_String());
+    printf("%d", reglen(&L));
     //print_livro(L);
 
 system("pause");

@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1432595017 source:f:\programacao exercicios\organizacao de arquivos\teste\main.c
+1432602563 source:f:\programacao exercicios\organizacao de arquivos\teste\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -7,7 +7,7 @@
 
 1432594646 f:\programacao exercicios\organizacao de arquivos\teste\livro.h
 
-1432594861 source:f:\programacao exercicios\organizacao de arquivos\teste\livro.c
+1432605070 source:f:\programacao exercicios\organizacao de arquivos\teste\livro.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
