@@ -5,24 +5,30 @@
 
 
 int main() {
-    FILE *arq = fopen("livraria.txt", "r+");
+    FILE *arq = fopen("BD_livros2.bin", "rb+");
+    Livro L;
     if(arq == NULL)
         printf("Erro ao abrir arquivo!!!");
 
-    Livro L;
-    //fwrite(s, sizeof(char), strlen(s), arq);
+    //setTopo(-1); // 4, 31, 58
+    //setTopo(4);
+    //setTopo(31);
+    //setTopo(58);
+    printf("Topo: %d\n", getTopo());
     Ler_dados_livro(&L);
-    Insere(&L);
-
+    InsereUmLivro(&L);
+    //Listar();
+    //printf("  Tamanho do Registro (REGLEN) %d\n\n", reglen(&L));
+    //escreveRegistro(arq, &L);
     //printf("%s", Le_String());
-    printf("%d", reglen(&L));
+
     //print_livro(L);
 
 system("pause");
 
 
 
-
+    return 0;
 }
 
 
