@@ -292,7 +292,3 @@ void print_livro(Livro lv){
 
 }
 
-void CriarArquivo(){
-    fopen("BD_livros2.bin", "w+b");
-}
-
