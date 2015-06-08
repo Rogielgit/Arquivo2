@@ -14,7 +14,7 @@ typedef struct {
 char* Le_String();
 void Ler_dados_livro(Livro*);
 void fflush_in();
-void InsereUmLivro(Livro*);
+void InsereUmLivro(FILE *arq, Livro*);
 void Insere();
 int reglen(Livro*);
 void print_livro(Livro);

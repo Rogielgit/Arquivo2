@@ -82,12 +82,12 @@ void escreveRegistro(FILE *arq, Livro *L){ //escreve na posicao atual no arquivo
             return;
 }
 
-void InsereUmLivro(Livro *L){
-      FILE *arq = fopen("BD_livros2.bin", "rb+");
+void InsereUmLivro(FILE *arq, Livro *L){
+      /*FILE *arq = fopen("BD_livros2.bin", "rb+");
       if(arq == NULL){
         printf("ERRO AO ABRIR ARQUIVO!!");
         return;
-      }
+      }*/
             int byteoffset = byteoffsetWorstFit(reglen(L)); //Retorna -1 se nenhum registro deletado for maior que o passado (ou nao houver reg. deletado)
             if(byteoffset == -1){ // Se for -1, insere no fim do arquivo
                fseek(arq, 0, SEEK_END); //Posicionando ponteiro para fim do arquivo
@@ -165,8 +165,7 @@ int byteoffsetWorstFit(int tam_reg){
             }
       }
 }
-/////////////////////////////////////////////////////////////
-/*void Insere(){
+void Insere(){
       FILE *arq = fopen("BD_livros2.bin", "rb+");
       if(arq == NULL)
         printf("Erro ao abrir arquivo!!!");
@@ -176,19 +175,19 @@ int byteoffsetWorstFit(int tam_reg){
 
         while(op == 's' || op == 'S'){
             Ler_dados_livro(&L);
-            InsereUmLivro(&L);
+            InsereUmLivro(arq, &L);
             printf("Registrar mais um Livro? (S/N)\n");
             fflush(stdin);
             scanf("%c", &op);
-            while(op != 'S' && op != 'N'){
+            fflush(stdin);
+            while(op != 's' && op != 'S' && op != 'n' && op != 'N'){
                   printf("Opcao Invalida!!\n");
                   fflush(stdin);
                   scanf("%c", &op);
             }
         }
-
       return;
-}*/
+}
 
 int getTopo(){ //funcao para pegar o topo da pilha
 

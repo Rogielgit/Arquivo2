@@ -15,8 +15,9 @@ int main() {
     //setTopo(31);
     //setTopo(58);
     printf("Topo: %d\n", getTopo());
-    Ler_dados_livro(&L);
-    InsereUmLivro(&L);
+    //Ler_dados_livro(&L);
+    //InsereUmLivro(&L);
+    Insere();
     //Listar();
     //printf("  Tamanho do Registro (REGLEN) %d\n\n", reglen(&L));
     //escreveRegistro(arq, &L);

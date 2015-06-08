@@ -1,13 +1,13 @@
 # depslib dependency file v1.0
-1433282592 source:f:\programacao exercicios\organizacao de arquivos\teste\main.c
+1433788919 source:f:\programacao exercicios\organizacao de arquivos\teste\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	"livro.h"
 
-1433276618 f:\programacao exercicios\organizacao de arquivos\teste\livro.h
+1433793928 f:\programacao exercicios\organizacao de arquivos\teste\livro.h
 
-1433282509 source:f:\programacao exercicios\organizacao de arquivos\teste\livro.c
+1433793943 source:f:\programacao exercicios\organizacao de arquivos\teste\livro.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
