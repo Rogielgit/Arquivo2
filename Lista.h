@@ -51,7 +51,7 @@ int ListaVazia(List * );
  *
  * @return Retorna código de erro
  */
-int InserirLista(List *, char *);
+int InserirLista(List *, char * );
 
 /**
  * @brief Remove todos os elementos específicos

@@ -56,7 +56,7 @@ int ListaVazia(List * Lista){
     return False;
 }
 
-int InserirLista(List * Lista, char * Info ){
+int InserirLista(List * Lista, char * Info){
     // Validade dos Argumentos
     if (Lista == NULL || Info == NULL)
         return ArgumentoInvalido;
