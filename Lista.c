@@ -64,7 +64,8 @@ int InserirLista(List * Lista, char * Info){
     // Auxiliares
     NoLista * L;
     L = (NoLista*) malloc(sizeof(NoLista));
-    strncpy(L->Info, Info, strlen(Info));
+    L->Info = (char *) malloc(sizeof(char) * strlen(Info));
+    strcpy(L->Info, Info);
     L->Proximo = NULL;
 
     // Insere como primeira se vazia
@@ -201,7 +202,6 @@ void Ordena(NoLista ** Primeiro, FuncaoComparacao Comparacao){
     (*Primeiro) = Recursao(*Primeiro, UltimoNo(*Primeiro), (FuncaoComparacao) Comparacao);
     return;
 }
-
 
 // Para ordenação
 // Compara a informação quando do tipo char * nas listas
