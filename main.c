@@ -7,6 +7,7 @@
 
 int main() {
 
+
     FILE *arq = fopen("BD_livros2.bin", "rb+");
    // Livro L;
     if(arq == NULL)
@@ -29,6 +30,18 @@ Pesquisa_ano(3);
 
     //print_livro(L);
 
+
+/*
+    List * Lista;
+    Lista = CriaLista();
+    InserirLista(Lista, 2);
+    InserirLista(Lista, 1);
+    InserirLista(Lista, 3);
+    Ordena(&Lista->Primeiro, (FuncaoComparacao) ComparaChavePrimaria);
+    printf("%d", Lista->Primeiro->Proximo->Info);
+    RemoverLista(Lista, (FuncaoComparacao) ComparaChave, 2);
+    printf("%d", Lista->Primeiro->Proximo->Info);
+    */
 
     return 0;
 }

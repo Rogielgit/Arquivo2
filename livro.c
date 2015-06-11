@@ -8,9 +8,7 @@
 
 void fflush_in(){// funÁ„o para limpar o teclado
 
-   int ch;
-
-   while( (ch = fgetc(stdin)) != EOF && ch != '\n' ){}
+    getchar();
 }
 
 
@@ -39,32 +37,32 @@ void setTopo(int value){ // funcao para colocar elemento no topo da pilha
 }
 
 char* Le_String()
-{ 
-    char *str,c = '\0';
+{
+    char * str, c = '\0';
     int tamanho = 0, i = 2;
     str = (char*)malloc(sizeof(char));
-    fflush(stdin);
+    fflush_in();
     scanf("%c",&c);
     while(c != '\n')
-   {      
+   {
       str[tamanho] = c;  //grava caractere lido
       i++;
-      str = (char*)realloc(str,i*sizeof(char)); //realocando espaÁo            
+      str = (char*)realloc(str,i * sizeof(char)); //realocando espaÁo
       tamanho++;
-      fflush(stdin);
+      fflush_in();
       scanf("%c",&c);
     }
     str[tamanho] = '\0'; //coloca '\0'no fim da string
-    printf("STR: %s\n",str);  
+    printf("STR: %s\n",str);
     return str;
 }
 
 void Ler_dados_livro(Livro *Dados)
 {
-  
+
     printf ("TITULO: ");
     fflush_in();
-    Dados->TITLE = Le_String(); 
+    Dados->TITLE = Le_String();
     printf ("AUTOR: ");
     fflush_in();
     Dados->AUTHOR = Le_String();
@@ -84,7 +82,7 @@ void Ler_dados_livro(Livro *Dados)
     printf ("PRECO: ");
     scanf ("%f",&Dados->PRICE);
     printf("\n");
- 
+
 }
 
 
@@ -104,16 +102,19 @@ void Pesquisa_ano(int Ano_procurado)
         printf("Nao foi possivel abrir o arquivo!!\n");
         exit(0);
     }
+
     fseek(arq,sizeof(int),SEEK_SET); // pula o conte√∫do relacionado ao topo da pilha 
 
     while(fread(&tamRegistro,sizeof(int),1,arq) == 1) // ler o tamanho
     {
            
       //fread(&remLogica,sizeof(char),1,arq);
+
         if (remLogica == '*'); // o arquivo foi marcado como removido
         else
         {
             //fseek(arq,sizeof(int),SEEK_CUR); // pula o byteoffiset
+
             registro = (char*)malloc((tamRegistro-12)*sizeof(char)); // aloca uma string do tamanho do registro - 12(2*int - float)
             fread (registro,(tamRegistro- 12)*sizeof(char),1,arq); // -12( -2*int - float)
             fread (&ano,sizeof(int),1,arq);
@@ -131,6 +132,9 @@ void Pesquisa_ano(int Ano_procurado)
 
             free(registro);
             
+
+            
+
         }
     }//dar um free
 }
@@ -171,10 +175,10 @@ return;
 }
 
 void InsereUmLivro(FILE *arq, Livro *L){
-    
+
     int byteoffset = byteoffsetWorstFit(reglen(L)); //Retorna -1 se nenhum registro deletado for maior que o passado (ou nao houver reg. deletado)
     if(byteoffset == -1) // Se for -1, insere no fim do arquivo
-    { 
+    {
       fseek(arq, 0, SEEK_END); //Posicionando ponteiro para fim do arquivo
       escreveRegistro(arq, L);
       return;
@@ -187,9 +191,9 @@ void InsereUmLivro(FILE *arq, Livro *L){
 }
 
 int byteoffsetWorstFit(int tam_reg){
-      // Retornos:      -1 se nao houver registro deletado maior do que o tamanho passado
-      //                -1 se nao houver nenhum reg. deletado
-      //                (int)byte offset do maior registro deletado
+    // Retornos:      -1 se nao houver registro deletado maior do que o tamanho passado
+    //   -1 se nao houver nenhum reg. deletado
+    //  (int)byte offset do maior registro deletado
     FILE *arq = fopen("BD_Livros2.bin", "rb");
     int offsetProx = getTopo(); //offset do proximo removido
     int tamAtual;
@@ -205,9 +209,9 @@ int byteoffsetWorstFit(int tam_reg){
 
     while(!feof(arq))
     {
-    
+
       delimCont = 0;
-      asterisco = NULL;
+      asterisco = '\0';
       tamAtual = 0;
       fseek(arq, offsetProx, SEEK_SET); // Pulando para registro no offset de offsetProx
       fread(&tamAtual, sizeof(int), 1, arq); // lendo primeiro int do registro (tamanho do registro)
@@ -269,7 +273,7 @@ void Insere()
 
         Livro L;
         char op = 's';
-        fseek(arq,sizeof(int),SEEK_SET); // pula a pilha 
+        fseek(arq,sizeof(int),SEEK_SET); // pula a pilha
 
         while(op == 's' || op == 'S')
         {
@@ -321,7 +325,9 @@ void Listar()
         printf("Ano: %d\nPagina: %d\nPreco: %0.2f\n\n\n",ano,pagina,preco);
         free(registro);        
     }
+
     fclose (arq);    
+
 }
 
 int reglen(Livro *L)  //Retorna o numero de bytes de um registro passado(conta os delimitadores mas nao conta os \0)
