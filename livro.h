@@ -1,7 +1,6 @@
 #ifndef LIVRO_H
 #define LIVRO_H
 
-#define ArgumentoInvalido -3
 #define SUCESSO 1
 
 #include "Lista.h"

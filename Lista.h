@@ -85,8 +85,6 @@ int BuscarLista (List *, FuncaoComparacao, const void * );
  */
 void Ordena(NoLista **, FuncaoComparacao);
 
-int ComparaNomeNasListas( NoLista *, char *);
-
 int ComparaChavePrimaria( NoLista *, int);
 
 int ComparaChave(NoLista *, int);
