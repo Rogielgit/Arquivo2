@@ -36,15 +36,15 @@
 1434038285 c:\users\lucas\desktop\lista\arquivo2\livro.h
 	"Lista.h"
 
-1434058701 c:\users\lucas\desktop\lista\arquivo2\lista.h
+1434059706 c:\users\lucas\desktop\lista\arquivo2\lista.h
 
-1434038834 source:c:\users\lucas\desktop\lista\arquivo2\main.c
+1434060117 source:c:\users\lucas\desktop\lista\arquivo2\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	"livro.h"
 
-1434058918 source:c:\users\lucas\desktop\lista\arquivo2\lista.c
+1434060252 source:c:\users\lucas\desktop\lista\arquivo2\lista.c
 	<stdlib.h>
 	"Lista.h"
 	<string.h>

@@ -14,6 +14,9 @@ int main() {
     InserirLista(Lista, 1);
     InserirLista(Lista, 3);
     Ordena(&Lista->Primeiro, (FuncaoComparacao) ComparaChavePrimaria);
+    printf("%d", Lista->Primeiro->Proximo->Info);
+    RemoverLista(Lista, (FuncaoComparacao) ComparaChave, 2);
+    printf("%d", Lista->Primeiro->Proximo->Info);
 
     return 0;
 }

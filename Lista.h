@@ -89,4 +89,6 @@ int ComparaNomeNasListas( NoLista *, char *);
 
 int ComparaChavePrimaria( NoLista *, int);
 
+int ComparaChave(NoLista *, int);
+
 #endif // LISTA_H
