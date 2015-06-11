@@ -88,46 +88,51 @@ void Ler_dados_livro(Livro *Dados)
 }
 
 
-void Pesquisa_ano(int Ano)
+void Pesquisa_ano(int Ano_procurado)
 {
 
     FILE *arq;
     int tamRegistro;
     char remLogica = '0'; //teste
     char *registro;
+    int ano,pagina;
+    float preco;
+
 
     if((arq = fopen("BD_livros2.bin","rb")) == NULL)
     {
         printf("Nao foi possivel abrir o arquivo!!\n");
         exit(0);
     }
-
-
     fseek(arq,sizeof(int),SEEK_SET); // pula o conteÃºdo relacionado ao topo da pilha 
 
-    while(fread(&tamRegistro,sizeof(int),1,arq) != 0) // ler o tamanho
-    {   printf("tama2 %d\n", tamRegistro); 
-        //fread(&remLogica,sizeof(char),1,arq);
+    while(fread(&tamRegistro,sizeof(int),1,arq) == 1) // ler o tamanho
+    {
+           
+      //fread(&remLogica,sizeof(char),1,arq);
         if (remLogica == '*'); // o arquivo foi marcado como removido
         else
         {
             //fseek(arq,sizeof(int),SEEK_CUR); // pula o byteoffiset
-            registro = (char*)malloc((tamRegistro+1)*sizeof(char)); // aloca uma string do tamanho do registro
-            fread (&registro,sizeof(tamRegistro),1,arq); 
-            //registro[tamRegistro+1] = '\0';
-            //printf("Registro: %s\n",registro);
-            // tirar daqui
-            /*
-            printf("Titulo : %s\n", (char*)strtok(registro,"|")); // percorre o registro 
-            printf("Autor : %s\n", (char*)strtok(NULL,"|"));
-            printf("Editora : %s\n", (char*)strtok(NULL,"|"));
-            printf("Linguagem : %s\n", (char*)strtok(NULL,"|"));
-            printf("Pagina : %s\n", (char*)strtok(NULL,"|"));                
-            printf("Ano de Lancamento : %s\n", (char*)strtok(NULL,"|"));                
-            printf("Preco : %s\n", (char*)strtok(NULL,"|"));                
-             */
+            registro = (char*)malloc((tamRegistro-12)*sizeof(char)); // aloca uma string do tamanho do registro - 12(2*int - float)
+            fread (registro,(tamRegistro- 12)*sizeof(char),1,arq); // -12( -2*int - float)
+            fread (&ano,sizeof(int),1,arq);
+            fread(&pagina,sizeof(int),1,arq);
+            fread (&preco,sizeof(float),1,arq);
+
+            if (ano == Ano_procurado)
+            {
+              printf("Titulo : %s\n", (char*)strtok(registro,"|")); // percorre o registro 
+              printf("Autor : %s\n", (char*)strtok(NULL,"|"));
+              printf("Editora : %s\n", (char*)strtok(NULL,"|"));
+              printf("Linguagem : %s\n", (char*)strtok(NULL,"|"));
+              printf("Ano: %d\nPagina: %d\nPreco: %0.2f\n\n\n",ano,pagina,preco);
+            }
+
+            free(registro);
+            
         }
-    }
+    }//dar um free
 }
 
 void escreveRegistro(FILE *arq, Livro *L)  //escreve na posicao atual no arquivo passado
@@ -135,33 +140,32 @@ void escreveRegistro(FILE *arq, Livro *L)  //escreve na posicao atual no arquivo
 
       char c = '|';
       int tam_registro_inserir = reglen(L);
-      //fprintf(arq, "%d", tam_registro_inserir);
       fwrite(&tam_registro_inserir,sizeof(int), 1, arq);
 
-
       fwrite(L->TITLE, sizeof(char), strlen(L->TITLE), arq);
-      fwrite(&c,sizeof(char), 1, arq); //colocando delimitador
+      fwrite(&c,sizeof(char), 1, arq); //colocando delimitadoresitador
 
       fwrite(L->AUTHOR,sizeof(char),strlen(L->AUTHOR), arq);
       fwrite(&c,sizeof(char), 1, arq); //colocando delimitador
 
-      fwrite(L->PUBLISHER,sizeof(char), strlen(L->PUBLISHER), arq);
+      fwrite(L->PUBLISHER,sizeof(char),strlen(L->PUBLISHER), arq);
       fwrite(&c,sizeof(char), 1, arq); //colocando delimitador
 
       //fprintf(arq, "%d", L->YEAR);
-      fwrite(&(L->YEAR),sizeof(int), 1, arq);
-      fwrite(&c,sizeof(char),1,arq); //colocando delimitador
-
+      
       fwrite(L->LANGUAGE,sizeof(char),strlen(L->LANGUAGE), arq);
       fwrite(&c,sizeof(char), 1, arq); //colocando delimitador
 
+      fwrite(&(L->YEAR),sizeof(int), 1, arq);
+      //fwrite(&c,sizeof(char),1,arq); //colocando delimitador
+
       //fprintf(arq, "%d", L->PAGES);
       fwrite(&(L->PAGES),sizeof(int), 1, arq);
-      fwrite(&c, sizeof(char), 1, arq); //colocando delimitador
+      //fwrite(&c, sizeof(char), 1, arq); //colocando delimitador
 
       //fprintf(arq, "%f", L->PRICE);
       fwrite(&(L->PRICE),sizeof(float),1,arq);
-      fwrite(&c,sizeof(char), 1, arq); //colocando delimitador
+      //fwrite(&c,sizeof(char), 1, arq); //colocando delimitador
 
 return;
 }
@@ -288,35 +292,36 @@ void Insere()
 
 void Listar()
 {
-    FILE *fo = fopen("BD_livros2.bin", "rb");
-    if(fo == NULL)
+    FILE *arq = fopen("BD_livros2.bin", "rb");
+    if(arq == NULL)
     {
         printf("ERRO AO ABRIR ARQUIVO!!");
         return;
     }
 
-    fseek(fo,sizeof(int),SEEK_SET); //pula o cabeçalho da pilha
-    int tam;
-    char st[150];// arrumar 
-    fread(&tam,sizeof(int),1,fo); 
-    printf("tam %d\n",tam);
-    fread(&st,tam,1,fo);
-    //printf("TAmanho_string: %d\n",strlen(st));
-    
-    printf("Titulo : %s\n", (char*)strtok(st,"|")); // percorre o registro 
-    printf("Autor : %s\n", (char*)strtok(NULL,"|"));
-    printf("Editora : %s\n", (char*)strtok(NULL,"|"));
-     printf("Ano de Lancamento : %s\n", (char*)strtok(NULL,"|"));
-    printf("Linguagem : %s\n", (char*)strtok(NULL,"|"));
-    printf("Pagina : %s\n", (char*)strtok(NULL,"|"));             
-    printf("Preco : %s\n", (char*)strtok(NULL,"|"));    
-    while(feof(fo))
+    fseek(arq,sizeof(int),SEEK_SET); //pula o cabeçalho da pilha
+    int tamRegistro,ano,pagina;
+    float preco;
+    char *registro;
+
+         
+    while(fread(&tamRegistro,sizeof(int),1,arq) == 1)
     {
-        fread(&tam,sizeof(int),1,fo);
-        fread(st,tam,1,fo);
-        printf("%s\n",st);
+        
+        registro = (char*)malloc((tamRegistro-12)*sizeof(char)); // aloca uma string do tamanho do registro - 12(2*int - float)
+        fread (registro,(tamRegistro- 12)*sizeof(char),1,arq); // -12( -2*int - float)
+        fread (&ano,sizeof(int),1,arq);
+        fread(&pagina,sizeof(int),1,arq);
+        fread (&preco,sizeof(float),1,arq);
+
+        printf("Titulo : %s\n", (char*)strtok(registro,"|")); // percorre o registro 
+        printf("Autor : %s\n", (char*)strtok(NULL,"|"));
+        printf("Editora : %s\n", (char*)strtok(NULL,"|"));
+        printf("Linguagem : %s\n", (char*)strtok(NULL,"|"));
+        printf("Ano: %d\nPagina: %d\nPreco: %0.2f\n\n\n",ano,pagina,preco);
+        free(registro);        
     }
-    fclose (fo);    
+    fclose (arq);    
 }
 
 int reglen(Livro *L)  //Retorna o numero de bytes de um registro passado(conta os delimitadores mas nao conta os \0)
@@ -349,7 +354,7 @@ int reglen(Livro *L)  //Retorna o numero de bytes de um registro passado(conta o
     cont += 2*sizeof(int); //YEAR e PAGES
     cont += sizeof(float); //PRICE
 
-    cont += 7*sizeof(char); //delimitadores
+    cont += 4*sizeof(char); //delimitadores
 
     return cont;
 }

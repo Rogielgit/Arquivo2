@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 #ifndef LIVRO_H
 #define LIVRO_H
 #define ArgumentoInvalido -1

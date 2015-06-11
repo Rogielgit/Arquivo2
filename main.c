@@ -20,8 +20,8 @@ int main() {
     //Ler_dados_livro(&L);
     //InsereUmLivro(&L);
 //Insere();
-//Pesquisa_ano(2);  
-Listar();
+Pesquisa_ano(3);  
+//Listar();
 
     //printf("  Tamanho do Registro (REGLEN) %d\n\n", reglen(&L));
     //escreveRegistro(arq, &L);

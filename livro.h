@@ -24,4 +24,6 @@ int reglen(Livro*);
 void print_livro(Livro);
 void Listar();
 void setTopo(int value);
+
+
 #endif // LIVRO_H
