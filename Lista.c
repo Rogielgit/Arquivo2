@@ -56,7 +56,7 @@ int ListaVazia(List * Lista){
     return False;
 }
 
-int InserirLista(List * Lista, char * Info){
+int InserirLista(List * Lista, int Info){
     // Validade dos Argumentos
     if (Lista == NULL || Info == NULL)
         return ArgumentoInvalido;
@@ -64,8 +64,7 @@ int InserirLista(List * Lista, char * Info){
     // Auxiliares
     NoLista * L;
     L = (NoLista*) malloc(sizeof(NoLista));
-    L->Info = (char *) malloc(sizeof(char) * strlen(Info));
-    strcpy(L->Info, Info);
+    L->Info = Info;
     L->Proximo = NULL;
 
     // Insere como primeira se vazia
@@ -223,4 +222,8 @@ int ComparaNome( NoLista * A, char * B ){
         return ArgumentoInvalido;
     // Retorna verdadeiro se corresponde
     return !strcmp(A->Info, B);
+}
+
+int ComparaChavePrimaria(NoLista * A, int B){
+    return (A->Info < B);
 }

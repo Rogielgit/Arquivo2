@@ -10,7 +10,7 @@
 typedef int (* FuncaoComparacao)(const void *, const void *);
 
 typedef struct NoLista {
-    char * Info;
+    int Info;
     struct NoLista * Proximo;
 } NoLista;
 
@@ -51,7 +51,7 @@ int ListaVazia(List * );
  *
  * @return Retorna código de erro
  */
-int InserirLista(List *, char * );
+int InserirLista(List *, int );
 
 /**
  * @brief Remove todos os elementos específicos
@@ -86,5 +86,7 @@ int BuscarLista (List *, FuncaoComparacao, const void * );
 void Ordena(NoLista **, FuncaoComparacao);
 
 int ComparaNomeNasListas( NoLista *, char *);
+
+int ComparaChavePrimaria( NoLista *, int);
 
 #endif // LISTA_H

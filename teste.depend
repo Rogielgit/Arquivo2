@@ -27,7 +27,7 @@
 	<string.h>
 	"livro.h"
 
-1434038915 source:c:\users\lucas\desktop\lista\arquivo2\livro.c
+1434039063 source:c:\users\lucas\desktop\lista\arquivo2\livro.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -36,7 +36,7 @@
 1434038285 c:\users\lucas\desktop\lista\arquivo2\livro.h
 	"Lista.h"
 
-1433949201 c:\users\lucas\desktop\lista\arquivo2\lista.h
+1434058701 c:\users\lucas\desktop\lista\arquivo2\lista.h
 
 1434038834 source:c:\users\lucas\desktop\lista\arquivo2\main.c
 	<stdio.h>
@@ -44,7 +44,7 @@
 	<string.h>
 	"livro.h"
 
-1434036382 source:c:\users\lucas\desktop\lista\arquivo2\lista.c
+1434058918 source:c:\users\lucas\desktop\lista\arquivo2\lista.c
 	<stdlib.h>
 	"Lista.h"
 	<string.h>
