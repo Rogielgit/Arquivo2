@@ -141,32 +141,33 @@ void escreveRegistro(FILE *arq, Livro *L)  //escreve na posicao atual no arquivo
 
       char c = '|';
       int tam_registro_inserir = reglen(L);
+      //fprintf(arq, "%d", tam_registro_inserir);
       fwrite(&tam_registro_inserir,sizeof(int), 1, arq);
 
+
       fwrite(L->TITLE, sizeof(char), strlen(L->TITLE), arq);
-      fwrite(&c,sizeof(char), 1, arq); //colocando delimitadoresitador
+      fwrite(&c,sizeof(char), 1, arq); //colocando delimitador
 
       fwrite(L->AUTHOR,sizeof(char),strlen(L->AUTHOR), arq);
       fwrite(&c,sizeof(char), 1, arq); //colocando delimitador
 
-      fwrite(L->PUBLISHER,sizeof(char),strlen(L->PUBLISHER), arq);
+      fwrite(L->PUBLISHER,sizeof(char), strlen(L->PUBLISHER), arq);
       fwrite(&c,sizeof(char), 1, arq); //colocando delimitador
 
       //fprintf(arq, "%d", L->YEAR);
-      
+      fwrite(&(L->YEAR),sizeof(int), 1, arq);
+      fwrite(&c,sizeof(char),1,arq); //colocando delimitador
+
       fwrite(L->LANGUAGE,sizeof(char),strlen(L->LANGUAGE), arq);
       fwrite(&c,sizeof(char), 1, arq); //colocando delimitador
 
-      fwrite(&(L->YEAR),sizeof(int), 1, arq);
-      //fwrite(&c,sizeof(char),1,arq); //colocando delimitador
-
       //fprintf(arq, "%d", L->PAGES);
       fwrite(&(L->PAGES),sizeof(int), 1, arq);
-      //fwrite(&c, sizeof(char), 1, arq); //colocando delimitador
+      fwrite(&c, sizeof(char), 1, arq); //colocando delimitador
 
       //fprintf(arq, "%f", L->PRICE);
       fwrite(&(L->PRICE),sizeof(float),1,arq);
-      //fwrite(&c,sizeof(char), 1, arq); //colocando delimitador
+      fwrite(&c,sizeof(char), 1, arq); //colocando delimitador
 
 return;
 }
