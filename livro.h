@@ -4,6 +4,8 @@
 #define ArgumentoInvalido -3
 #define SUCESSO 1
 
+#include "Lista.h"
+
 typedef struct {
 
     char *TITLE;
@@ -48,7 +50,7 @@ List * matching(List *, List *);
 
 // Faz merging entre duas listas dadas no argumento
 // Retorna o resultado num ponteiro de outra lista
-Lista * merging(List *, List *)
+List * merging(List *, List *);
 
 #endif // LIVRO_H
 

@@ -8,9 +8,7 @@
 
 void fflush_in(){// funÁ„o para limpar o teclado
 
-   int ch;
-
-   while( (ch = fgetc(stdin)) != EOF && ch != '\n' ){}
+    getchar();
 }
 
 
@@ -39,32 +37,32 @@ void setTopo(int value){ // funcao para colocar elemento no topo da pilha
 }
 
 char* Le_String()
-{ 
-    char *str,c = '\0';
+{
+    char * str, c = '\0';
     int tamanho = 0, i = 2;
     str = (char*)malloc(sizeof(char));
-    fflush(stdin);
+    fflush_in();
     scanf("%c",&c);
     while(c != '\n')
-   {      
+   {
       str[tamanho] = c;  //grava caractere lido
       i++;
-      str = (char*)realloc(str,i*sizeof(char)); //realocando espaÁo            
+      str = (char*)realloc(str,i * sizeof(char)); //realocando espaÁo
       tamanho++;
-      fflush(stdin);
+      fflush_in();
       scanf("%c",&c);
     }
     str[tamanho] = '\0'; //coloca '\0'no fim da string
-    printf("STR: %s\n",str);  
+    printf("STR: %s\n",str);
     return str;
 }
 
 void Ler_dados_livro(Livro *Dados)
 {
-  
+
     printf ("TITULO: ");
     fflush_in();
-    Dados->TITLE = Le_String(); 
+    Dados->TITLE = Le_String();
     printf ("AUTOR: ");
     fflush_in();
     Dados->AUTHOR = Le_String();
@@ -84,7 +82,7 @@ void Ler_dados_livro(Livro *Dados)
     printf ("PRECO: ");
     scanf ("%f",&Dados->PRICE);
     printf("\n");
- 
+
 }
 
 
@@ -103,28 +101,28 @@ void Pesquisa_ano(int Ano)
     }
 
 
-    fseek(arq,sizeof(int),SEEK_SET); // pula o conte√∫do relacionado ao topo da pilha 
+    fseek(arq,sizeof(int),SEEK_SET); // pula o conte√∫do relacionado ao topo da pilha
 
     while(fread(&tamRegistro,sizeof(int),1,arq) != 0) // ler o tamanho
-    {   printf("tama2 %d\n", tamRegistro); 
+    {   printf("tama2 %d\n", tamRegistro);
         //fread(&remLogica,sizeof(char),1,arq);
         if (remLogica == '*'); // o arquivo foi marcado como removido
         else
         {
             //fseek(arq,sizeof(int),SEEK_CUR); // pula o byteoffiset
             registro = (char*)malloc((tamRegistro+1)*sizeof(char)); // aloca uma string do tamanho do registro
-            fread (&registro,sizeof(tamRegistro),1,arq); 
+            fread (&registro,sizeof(tamRegistro),1,arq);
             //registro[tamRegistro+1] = '\0';
             //printf("Registro: %s\n",registro);
             // tirar daqui
             /*
-            printf("Titulo : %s\n", (char*)strtok(registro,"|")); // percorre o registro 
+            printf("Titulo : %s\n", (char*)strtok(registro,"|")); // percorre o registro
             printf("Autor : %s\n", (char*)strtok(NULL,"|"));
             printf("Editora : %s\n", (char*)strtok(NULL,"|"));
             printf("Linguagem : %s\n", (char*)strtok(NULL,"|"));
-            printf("Pagina : %s\n", (char*)strtok(NULL,"|"));                
-            printf("Ano de Lancamento : %s\n", (char*)strtok(NULL,"|"));                
-            printf("Preco : %s\n", (char*)strtok(NULL,"|"));                
+            printf("Pagina : %s\n", (char*)strtok(NULL,"|"));
+            printf("Ano de Lancamento : %s\n", (char*)strtok(NULL,"|"));
+            printf("Preco : %s\n", (char*)strtok(NULL,"|"));
              */
         }
     }
@@ -167,10 +165,10 @@ return;
 }
 
 void InsereUmLivro(FILE *arq, Livro *L){
-    
+
     int byteoffset = byteoffsetWorstFit(reglen(L)); //Retorna -1 se nenhum registro deletado for maior que o passado (ou nao houver reg. deletado)
     if(byteoffset == -1) // Se for -1, insere no fim do arquivo
-    { 
+    {
       fseek(arq, 0, SEEK_END); //Posicionando ponteiro para fim do arquivo
       escreveRegistro(arq, L);
       return;
@@ -201,7 +199,7 @@ int byteoffsetWorstFit(int tam_reg){
 
     while(!feof(arq))
     {
-    
+
       delimCont = 0;
       asterisco = NULL;
       tamAtual = 0;
@@ -265,7 +263,7 @@ void Insere()
 
         Livro L;
         char op = 's';
-        fseek(arq,sizeof(int),SEEK_SET); // pula a pilha 
+        fseek(arq,sizeof(int),SEEK_SET); // pula a pilha
 
         while(op == 's' || op == 'S')
         {
@@ -297,26 +295,26 @@ void Listar()
 
     fseek(fo,sizeof(int),SEEK_SET); //pula o cabeÁalho da pilha
     int tam;
-    char st[150];// arrumar 
-    fread(&tam,sizeof(int),1,fo); 
+    char st[150];// arrumar
+    fread(&tam,sizeof(int),1,fo);
     printf("tam %d\n",tam);
-    fread(&st,tam,1,fo);
-    //printf("TAmanho_string: %d\n",strlen(st));
-    
-    printf("Titulo : %s\n", (char*)strtok(st,"|")); // percorre o registro 
+    fread(&st,tam, 1,fo);
+//    printf("TAmanho_string: %d\n",strlen(st));
+
+    printf("Titulo : %s\n", (char*)strtok(st,"|")); // percorre o registro
     printf("Autor : %s\n", (char*)strtok(NULL,"|"));
     printf("Editora : %s\n", (char*)strtok(NULL,"|"));
      printf("Ano de Lancamento : %s\n", (char*)strtok(NULL,"|"));
     printf("Linguagem : %s\n", (char*)strtok(NULL,"|"));
-    printf("Pagina : %s\n", (char*)strtok(NULL,"|"));             
-    printf("Preco : %s\n", (char*)strtok(NULL,"|"));    
+    printf("Pagina : %s\n", (char*)strtok(NULL,"|"));
+    printf("Preco : %s\n", (char*)strtok(NULL,"|"));
     while(feof(fo))
     {
         fread(&tam,sizeof(int),1,fo);
         fread(st,tam,1,fo);
         printf("%s\n",st);
     }
-    fclose (fo);    
+    fclose (fo);
 }
 
 int reglen(Livro *L)  //Retorna o numero de bytes de um registro passado(conta os delimitadores mas nao conta os \0)
