@@ -20,13 +20,14 @@ void Pesquisa_ano(int ); // procura livros sequencialmente no arquivo, de acordo
 char* Le_String();
 void Ler_dados_livro(Livro*);
 void fflush_in();
-void InsereUmLivro(FILE *arq, Livro*);
+void InsereUmLivro(Livro);
 void Insere();
-int reglen(Livro*);
+int reglen(Livro);
 void print_livro(Livro);
 void Listar();
 void setTopo(int value);
 
+int Tamanho_Arquivos();
 // Soma ou subtrai do contador de registros
 // Para criação do índice, que só é feita quando há 10+ registros.
 void adicionaNaContagemDeRegistros(int);
