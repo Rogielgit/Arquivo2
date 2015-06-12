@@ -2,6 +2,7 @@
 #define LIVRO_H
 #define ArgumentoInvalido -3
 #define SUCESSO 1
+#include "Lista.h"
 
 //#include "Lista.h"
 
@@ -14,10 +15,6 @@ typedef struct {
     int PAGES;
     float PRICE;
 }Livro;
-
-
-
-
 
 
 void fflush_in();// função para limpar o teclado
@@ -52,13 +49,11 @@ void * criarIndiceSecundarioEditora(char *);
 
 // Faz matching entre duas listas dadas no argumento
 // Retorna o resultado num ponteiro de outra lista
-///List * matching(List *, List *);
-
-
+List * matching(List *, List *);
 
 // Faz merging entre duas listas dadas no argumento
 // Retorna o resultado num ponteiro de outra lista
-//List * merging(List *, List *);
-
+List * merging(List *, List *);
 
 #endif // LIVRO_H
+
