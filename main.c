@@ -33,7 +33,9 @@ int main()
             //edi_ind = Cria_Indice_Autor(tamanho);
         }*/
 
-        printf("\n-----------------------\n");
+        printf("\n**************************\n");
+        printf("           MENU\n");
+        printf("**************************\n\n");
         printf("1-Inserir Livro\n");
         printf("2-Pesquisa Ano\n");
         printf("3-Listar\n");
@@ -43,16 +45,18 @@ int main()
         printf("7-Pesquisa Autor ou Editora\n");
         printf("8-Remove\n");
         printf("9-Sair\n\n\n");
-      //  void fflush_in();// função para limpar o teclado
-        scanf("%c",&op);
+
+        printf("Opcao Desejada: ");
         setbuf(stdin,NULL);
+        scanf(" %c",&op);
+        
 
         if (op == '1')
-        {
+        {   
+            setbuf(stdin,NULL);
             Livro L;
-            //Ler_dados_livro(&L);
-            //InsereUmLivro(L);
-            Insere();
+            Ler_dados_livro(&L);
+            InsereUmLivro(L);
             tamanho++;
         }
         else if(op == '2')
@@ -61,10 +65,11 @@ int main()
             printf("Ano: ");
             scanf("%d",&ano);
             setbuf(stdin,NULL);
-//            Pesquisa_ano(ano);
+            Pesquisa_ano(ano);
+
         }
         else if(op == '3')
-        {
+        {   printf("Entrou Menu\n");
             Listar();
         }
         else if(op == '4')
