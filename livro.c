@@ -4,6 +4,12 @@
 #include <string.h>
 #include "livro.h"
 
+void fflush_in(){// função para limpar o teclado
+
+    getchar();
+}
+
+
 void Print_Livro(Livro lv)
 {
     printf("Nome: %s",lv.TITLE);
@@ -222,7 +228,7 @@ void Listar(FILE *arq)
     int tam;
     int auxi;
     float auxf;
-    fseek (arq , sizeof(int) , SEEK_SET);
+    fseek (arq , sizeof(int) , SEEK_SET); // pula o cabeçalho
     fread(&tam,sizeof(int),1,arq);
     if (feof(arq))
     {
@@ -273,6 +279,7 @@ void Listar(FILE *arq)
         else
         {
             printf("Deseja continuar listando?\n");
+            fflush_in();// função para limpar o teclado
             scanf("%c",&opc);
             setbuf(stdin,NULL);
         }

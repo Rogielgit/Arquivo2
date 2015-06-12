@@ -41,6 +41,7 @@ int main()
         printf("7-Pesquisa Autor ou Editora\n");
         printf("8-Remove\n");
         printf("9-Sair\n\n\n");
+      //  void fflush_in();// função para limpar o teclado
         scanf("%c",&op);
         setbuf(stdin,NULL);
 
@@ -49,7 +50,6 @@ int main()
             Livro L;
             Ler_dados_livro(&L);
             InsereUmLivro(L);
-            //Insere();
             tamanho++;
         }
         else if(op == '2')
@@ -62,7 +62,7 @@ int main()
         }
         else if(op == '3')
         {
-            Listar(arq);
+            Listar();
         }
         else if(op == '4')
         {
