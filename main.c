@@ -49,8 +49,9 @@ int main()
         if (op == '1')
         {
             Livro L;
-            Ler_dados_livro(&L);
-            InsereUmLivro(L);
+            //Ler_dados_livro(&L);
+            //InsereUmLivro(L);
+            Insere();
             tamanho++;
         }
         else if(op == '2')

@@ -29,13 +29,13 @@ char* Le_String()
     return str;
 }
 
-int reglen(Livro L)  //Retorna o numero de bytes de um registro passado(conta os delimitadores mas nao conta os \0)
+int reglen(Livro *L)  //Retorna o numero de bytes de um registro passado(conta os delimitadores mas nao conta os \0)
 {
     int cont = 0;
-    cont += strlen(L.TITLE);
-    cont += strlen(L.AUTHOR);
-    cont += strlen(L.PUBLISHER);
-    cont += strlen(L.LANGUAGE);
+    cont += strlen(L->TITLE);
+    cont += strlen(L->AUTHOR);
+    cont += strlen(L->PUBLISHER);
+    cont += strlen(L->LANGUAGE);
     cont += 2*sizeof(int); //YEAR e PAGES
     cont += sizeof(float); //PRICE
     cont += 4*sizeof(char); //delimitadores
@@ -63,7 +63,7 @@ void Ler_dados_livro(Livro *Dados)
 
 }
 
-void escreveRegistro(Livro L,int byteoffset)  //escreve na posicao atual no arquivo passado
+/*void escreveRegistro(Livro L,int byteoffset)  //escreve na posicao atual no arquivo passado
 {
     FILE *arq;
     arq = fopen("BD_livros2.bin", "rb+");
@@ -95,7 +95,7 @@ void escreveRegistro(Livro L,int byteoffset)  //escreve na posicao atual no arqu
     fwrite(&(L.PRICE),sizeof(float),1,arq);
     fclose(arq);
 }
-
+*/
 int getTopo(){ //funcao para pegar o topo da pilha
 
     FILE * File;
@@ -214,7 +214,7 @@ int Tamanho_Arquivos()
     return tam;
 }
 
-void InsereUmLivro(Livro L){
+/*void InsereUmLivro(Livro L){
     int byteoffset = byteoffsetWorstFit(reglen(L)); //Retorna -1 se nenhum registro deletado for maior que o passado (ou nao houver reg. deletado)
     escreveRegistro(L,byteoffset);
 }
@@ -287,7 +287,7 @@ void Listar(FILE *arq)
 }
 
 
-
+*/
 /*char* Le_String()
 {
     char * str, c = '\0';
@@ -362,7 +362,7 @@ void Pesquisa_ano(int Ano_procurado)
     }//dar um free
 }
 
-/*
+
 
 void escreveRegistro(FILE *arq, Livro *L)  //escreve na posicao atual no arquivo passado
 {
@@ -381,17 +381,17 @@ void escreveRegistro(FILE *arq, Livro *L)  //escreve na posicao atual no arquivo
 
       fwrite(L->PUBLISHER,sizeof(char), strlen(L->PUBLISHER), arq);
       fwrite(&c,sizeof(char), 1, arq); //colocando delimitador
-
-      //fprintf(arq, "%d", L->YEAR);
-      fwrite(&(L->YEAR),sizeof(int), 1, arq);
-      fwrite(&c,sizeof(char),1,arq); //colocando delimitador
-
       fwrite(L->LANGUAGE,sizeof(char),strlen(L->LANGUAGE), arq);
       fwrite(&c,sizeof(char), 1, arq); //colocando delimitador
+      //fprintf(arq, "%d", L->YEAR);
+      fwrite(&(L->YEAR),sizeof(int), 1, arq);
+      
+
+      
 
       //fprintf(arq, "%d", L->PAGES);
       fwrite(&(L->PAGES),sizeof(int), 1, arq);
-      fwrite(&c, sizeof(char), 1, arq); //colocando delimitador
+      
 
       //fprintf(arq, "%f", L->PRICE);
       fwrite(&(L->PRICE),sizeof(float),1,arq);
@@ -415,7 +415,7 @@ void InsereUmLivro(FILE *arq, Livro *L){
     return;
     fclose(arq);
 }
-
+/*
 int byteoffsetWorstFit(int tam_reg){
     // Retornos:      -1 se nao houver registro deletado maior do que o tamanho passado
     //   -1 se nao houver nenhum reg. deletado
@@ -490,7 +490,7 @@ int byteoffsetWorstFit(int tam_reg){
         }
     }
 }
-/
+*/
 void Insere()
 {
       FILE *arq = fopen("BD_livros2.bin", "rb+");
@@ -524,4 +524,4 @@ void Insere()
 
 
 
-*/
+
