@@ -13,14 +13,15 @@ int main()
 
     //verifica se arquivo existe, se não existir cria e coloca topo = -1
     arq = fopen("BD_livros2.bin", "rb+");
+
     if( arq == NULL )
     {
         int aux=-1;
-        arq = fopen("BD_livros2.bin", "w");
+        arq = fopen("BD_livros2.bin", "wb+");
         fwrite(&aux,sizeof(int), 1, arq);
     }
 
-    fclose(arq);
+    //fclose(arq);
     char op='s';
     while( op != '9' )
     {
@@ -62,7 +63,7 @@ int main()
         }
         else if(op == '3')
         {
-            Listar();
+            Listar(arq);
         }
         else if(op == '4')
         {
