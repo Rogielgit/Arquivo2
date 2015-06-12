@@ -39,7 +39,7 @@ int BuscarLista(List * Lista, FuncaoComparacao Comparacao, const void * arg){
     // Percorre a lista comparando o elemento
     while (L != NULL){
         // Se encontrar, retorna positivamente
-        if (Comparacao(L->Info, arg))
+        if ((FuncaoComparacao) Comparacao(L->Info, arg))
             return True;
         L = L->Proximo;
     }
@@ -58,7 +58,7 @@ int ListaVazia(List * Lista){
 
 int InserirLista(List * Lista, int Info){
     // Validade dos Argumentos
-    if (Lista == NULL || Info == NULL)
+    if (Lista == NULL)
         return ArgumentoInvalido;
 
     // Auxiliares
@@ -198,31 +198,9 @@ void Ordena(NoLista ** Primeiro, FuncaoComparacao Comparacao){
     return;
 }
 
-// Para ordenação
-// Compara a informação quando do tipo char * nas listas
-int ComparaNomeNasListas( NoLista * A, char * B ){
-    // Validade dos Argumentos
-    if (A == NULL || B == NULL)
-        return ArgumentoInvalido;
-    // Retorna verdadeiro se corresponde
-    if( strcmp(A->Info, B) > 0 )
-        return 0;
-    return 1;
-}
-
-// Para comparação por fora
-// Compara a informação quando do tipo char * nas listas
-int ComparaNome( NoLista * A, char * B ){
-    // Validade dos Argumentos
-    if (A == NULL || B == NULL)
-        return ArgumentoInvalido;
-    // Retorna verdadeiro se corresponde
-    return !strcmp(A->Info, B);
-}
-
 int ComparaChavePrimaria(NoLista * A, int B){
     // Validade dos Argumentos
-    if (A == NULL || B == NULL)
+    if (A == NULL)
         return ArgumentoInvalido;
 
     return (A->Info < B);
@@ -230,7 +208,7 @@ int ComparaChavePrimaria(NoLista * A, int B){
 
 int ComparaChave(NoLista * A, int B){
     // Validade dos Argumentos
-    if (A == NULL || B == NULL)
+    if (A == NULL)
         return ArgumentoInvalido;
 
     return (A->Info == B);
