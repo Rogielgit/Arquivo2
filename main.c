@@ -17,7 +17,11 @@ int main() {
     printf("%d", Lista->Primeiro->Proximo->Info);
     RemoverLista(Lista, (FuncaoComparacao) ComparaChave, 2);
     printf("%d", Lista->Primeiro->Proximo->Info);
+ 
 
+
+
+ 
     return 0;
 }
 
