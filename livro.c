@@ -363,6 +363,8 @@ void Pesquisa_ano(int Ano_procurado)
               printf("Ano: %d\nPagina: %d\nPreco: %0.2f\n\n\n",ano,pagina,preco);
               flag = 1;
 
+              
+
             }          
         }
     }
