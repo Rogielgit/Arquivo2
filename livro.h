@@ -16,6 +16,10 @@ typedef struct {
 }Livro;
 
 
+
+
+
+
 void fflush_in();// função para limpar o teclado
 
 void Pesquisa_ano(int ); // procura livros sequencialmente no arquivo, de acordo com o ano oferecido
