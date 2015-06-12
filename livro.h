@@ -41,6 +41,9 @@ void adicionaNaContagemDeRegistros(int);
 void * criarIndiceSecundarioAutor(char *);
 
 // Mesma coisa da do Autor
+
+
+
 void * criarIndiceSecundarioEditora(char *);
 
 // Faz matching entre duas listas dadas no argumento

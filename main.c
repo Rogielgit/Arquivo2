@@ -20,7 +20,6 @@ int main()
         arq = fopen("BD_livros2.bin", "wb+");
         fwrite(&aux,sizeof(int), 1, arq);
     }
-
     //fclose(arq);
     char op='s';
     setTopo(-1); 
@@ -78,7 +77,6 @@ int main()
         }
         else if(op == '5')
         {
-
         }
         else if(op == '6')
         {
@@ -94,5 +92,25 @@ int main()
         }
         setbuf(stdin,NULL);
     }
+
+
+
     return 0;
+
+
+/*
+    List * Lista;
+    Lista = CriaLista();
+    InserirLista(Lista, 2);
+    InserirLista(Lista, 1);
+    InserirLista(Lista, 3);
+    Ordena(&Lista->Primeiro, (FuncaoComparacao) ComparaChavePrimaria);
+    printf("%d", Lista->Primeiro->Proximo->Info);
+    RemoverLista(Lista, (FuncaoComparacao) ComparaChave, 2);
+    printf("%d", Lista->Primeiro->Proximo->Info);
+ 
+
+*/
+
+
 }
