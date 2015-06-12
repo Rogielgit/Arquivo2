@@ -54,8 +54,9 @@ int main()
         {   
             setbuf(stdin,NULL);
             Livro L;
-            Ler_dados_livro(&L);
-            InsereUmLivro(L);
+         //   Ler_dados_livro(&L);
+           // InsereUmLivro(L);
+            Insere();
             tamanho++;
         }
         else if(op == '2')

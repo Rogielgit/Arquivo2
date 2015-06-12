@@ -1,28 +1,13 @@
-#ifndef LIVRO_H
-#define LIVRO_H
-#define ArgumentoInvalido -1
-#define SUCESSO 1
-#define ListaEstaVazia -29
-#define ArgumentoInvalido -1
-#define False 0
-#define True 1
-#define Sucesso 1
+#ifndef LISTA_H
+#define LISTA_H
 
+#define ListaEstaVazia    - 29
+#define ArgumentoInvalido -  1
+#define False                0
+#define True                 1
+#define Sucesso              1
 
 typedef int (* FuncaoComparacao)(const void *, const void *);
-
-typedef struct {
-
-    char *TITLE;
-    char *AUTHOR;
-    char *PUBLISHER;
-    int YEAR;
-    char *LANGUAGE;
-    int PAGES;
-    float PRICE;
-}Livro;
-
-
 
 typedef struct NoLista {
     int Info;
@@ -30,10 +15,8 @@ typedef struct NoLista {
 } NoLista;
 
 typedef struct{
-
     NoLista * Primeiro;
 } List;
-
 
 /**
  * @brief Cria uma Lista Ligada
@@ -106,5 +89,4 @@ int ComparaChavePrimaria( NoLista *, int);
 
 int ComparaChave(NoLista *, int);
 
-#endif 
-
+#endif // LISTA_H

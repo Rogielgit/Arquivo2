@@ -1,10 +1,9 @@
 #ifndef LIVRO_H
 #define LIVRO_H
-#define ArgumentoInvalido -3
 #define SUCESSO 1
 #include "Lista.h"
 
-//#include "Lista.h"
+
 
 typedef struct {
     char *TITLE;
@@ -14,6 +13,7 @@ typedef struct {
     char *LANGUAGE;
     int PAGES;
     float PRICE;
+
 }Livro;
 
 
@@ -23,12 +23,14 @@ void Pesquisa_ano(int ); // procura livros sequencialmente no arquivo, de acordo
 char* Le_String();
 void Ler_dados_livro(Livro*);
 void fflush_in();
-void InsereUmLivro(Livro);
+void InsereUmLivro(FILE *,Livro);
 void Insere();
 int reglen(Livro);
 void print_livro(Livro);
 void Listar();
 void setTopo(int value);
+
+void escreveRegistro(FILE*,Livro,int);
 
 int Tamanho_Arquivos();
 // Soma ou subtrai do contador de registros

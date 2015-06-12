@@ -64,10 +64,10 @@ void Ler_dados_livro(Livro *Dados)
 
 }
 
-void escreveRegistro(Livro L,int byteoffset)  //escreve na posicao atual no arquivo passado
+void escreveRegistro(FILE *arq,Livro L,int byteoffset)  //escreve na posicao atual no arquivo passado
 {
-    FILE *arq;
-    arq = fopen("BD_livros2.bin", "rb+");
+ //   FILE *arq;
+   // arq = fopen("BD_livros2.bin", "rb+");
     char c = '|';
     int tam_registro_inserir = reglen(L);
     if(byteoffset == -1)
@@ -94,7 +94,7 @@ void escreveRegistro(Livro L,int byteoffset)  //escreve na posicao atual no arqu
     fwrite(&(L.PAGES),sizeof(int), 1, arq);
 
     fwrite(&(L.PRICE),sizeof(float),1,arq);
-    fclose(arq);
+
 }
 
 int getTopo(){ //funcao para pegar o topo da pilha
@@ -182,7 +182,6 @@ int byteoffsetWorstFit(int tam_reg){
                               //delimCont = 0;
                               //Procurando campo YEAR
                               /*while(delimCont != 3){ //Enquanto nao contarmos 3 delimitadores
-                                    fread(&aux, sizeof(char), 1, arq); //le um caractere
                                     if(aux == '|') //Se for igual ao delimitador, incrementa delimCont
                                           delimCont++;
                               }*/
@@ -215,9 +214,38 @@ int Tamanho_Arquivos()
     return tam;
 }
 
-void InsereUmLivro(Livro L){
+void InsereUmLivro(FILE *arq,Livro L)
+{
     int byteoffset = byteoffsetWorstFit(reglen(L)); //Retorna -1 se nenhum registro deletado for maior que o passado (ou nao houver reg. deletado)
-    escreveRegistro(L,byteoffset);
+    escreveRegistro(arq,L,byteoffset);
+}
+
+void Insere(){
+    
+    FILE *arq = fopen("BD_livros2.bin", "rb+");
+    if(arq == NULL)
+    printf("Erro ao abrir arquivo!!!");
+    Livro L;
+    char op = 's';
+    while(op == 's' || op == 'S'){
+        
+        Ler_dados_livro(&L);
+        InsereUmLivro(arq,L);
+        printf("Registrar mais um Livro? (S/N)\n");
+        fflush(stdin);
+        scanf(" %c",&op);
+        fflush(stdin);
+
+        while(op != 's' && op != 'S' && op != 'n' && op != 'N'){
+
+            printf("Opcao Invalida!!\n");
+            fflush(stdin);
+            
+            scanf("%c", &op);
+        }
+    
+    }
+return;
 }
 
 void Listar()
@@ -362,9 +390,6 @@ void Pesquisa_ano(int Ano_procurado)
               printf("Linguagem : %s\n", (char*)strtok(NULL,"|"));
               printf("Ano: %d\nPagina: %d\nPreco: %0.2f\n\n\n",ano,pagina,preco);
               flag = 1;
-
-              
-
             }          
         }
     }
