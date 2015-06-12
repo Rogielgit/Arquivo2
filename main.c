@@ -23,6 +23,7 @@ int main()
 
     //fclose(arq);
     char op='s';
+    setTopo(-1); 
     while( op != '9' )
     {
         //se ainda não inicializou e tamanho > 10
@@ -64,7 +65,7 @@ int main()
         }
         else if(op == '3')
         {
-            Listar(arq);
+            Listar();
         }
         else if(op == '4')
         {
