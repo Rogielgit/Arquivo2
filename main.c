@@ -7,6 +7,7 @@
 int main()
 {
     FILE *arq;
+    char Autor[30];
   //  Indice aut_ind,edi_ind;
     int tamanho=Tamanho_Arquivos();
    // aut_ind.tam=-1;
@@ -48,7 +49,7 @@ int main()
         printf("Opcao Desejada: ");
         setbuf(stdin,NULL);
         scanf(" %c",&op);
-        
+        ///criar o indice somente quando chegar a 10.
 
         if (op == '1')
         {   
@@ -74,7 +75,8 @@ int main()
         }
         else if(op == '4')
         {
-
+            scanf("%s",Autor);
+            //chamar função
         }
         else if(op == '5')
         {
