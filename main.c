@@ -2,30 +2,36 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "livro.h"
-//#include "indice.h"
+#include "Indice.h"
 
 int main()
 {
     FILE *arq;
-    char Autor[30];
-  //  Indice aut_ind,edi_ind;
-    int tamanho=Tamanho_Arquivos();
-   // aut_ind.tam=-1;
+    char Autor[30],Editora[30];
 
+    List *segAutor,*segEditora;
+  //Indice aut_ind,edi_ind;
+  
+   //aut_ind.tam=-1;
+    //guardar no arquivo a quantidade de registro salvo.
     //verifica se arquivo existe, se não existir cria e coloca topo = -1
     arq = fopen("BD_livros2.bin", "rb+");
-
     if( arq == NULL )
-    {
+    {   printf("Entrou\n");
         int aux=-1;
         arq = fopen("BD_livros2.bin", "wb+");
         fwrite(&aux,sizeof(int), 1, arq);
     }
-    //fclose(arq);
+    fclose(arq);
+
+    int tamanho =0 ;
+
     char op='s';
-    setTopo(-1); 
+  
     while( op != '9' )
     {
+        tamanho =Tamanho_Arquivos();
+        printf("Tam-agora %d\n",tamanho);
         //se ainda não inicializou e tamanho > 10
        /* if( tamanho>=10 && aut_ind.tam==-1)
         {
@@ -46,10 +52,13 @@ int main()
         printf("8-Remove\n");
         printf("9-Sair\n\n\n");
 
+
+  printf("Topo pilha %d\n",getTopo());
         printf("Opcao Desejada: ");
         setbuf(stdin,NULL);
         scanf(" %c",&op);
         ///criar o indice somente quando chegar a 10.
+
 
         if (op == '1')
         {   
@@ -58,7 +67,7 @@ int main()
          //   Ler_dados_livro(&L);
            // InsereUmLivro(L);
             Insere();
-            tamanho++;
+            tamanho =Tamanho_Arquivos();
         }
         else if(op == '2')
         {
@@ -70,7 +79,7 @@ int main()
 
         }
         else if(op == '3')
-        {   printf("Entrou Menu\n");
+        {  
             Listar();
         }
         else if(op == '4')
@@ -80,20 +89,33 @@ int main()
         }
         else if(op == '5')
         {
+             scanf("%s",Editora);
         }
         else if(op == '6')
-        {
+        {   
+            printf("Autor: ");
+            scanf("%s",Autor);
+            printf("Editora: ");
+            scanf("%s",Editora);
 
         }
         else if(op == '7')
         {
-
+            printf("Autor: ");
+            scanf("%s",Autor);
+            printf("Editora: ");
+            scanf("%s",Editora);
         }
         else if(op == '8')
         {
+            Remove_registro(0);
+            //Remove_registro(24);
+            //Remove_registro(48);
 
+           
         }
         setbuf(stdin,NULL);
+
     }
 
 

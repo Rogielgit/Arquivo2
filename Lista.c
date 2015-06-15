@@ -1,13 +1,13 @@
-#include <stdlib.h>
 #include "Lista.h"
-#include <string.h>
+#include "stdlib.h"
 
 List * CriaLista(){
     // Declara, Aloca e Inicializa a Lista
     List * Lista;
     Lista = (List*)malloc(sizeof(List));
     Lista->Primeiro = NULL;
-    return Lista;
+
+return Lista;
 }
 
 int DestroiLista(List * Lista){
@@ -25,25 +25,6 @@ int DestroiLista(List * Lista){
     }
     // Libera a memória
     free(Lista);
-    return Sucesso;
-}
-
-int BuscarLista(List * Lista, FuncaoComparacao Comparacao, const void * arg){
-    // Validade dos Argumentos
-    if (Lista == NULL || Comparacao == NULL || arg == NULL)
-        return ArgumentoInvalido;
-
-    // Auxiliares
-    NoLista * L;
-    L = Lista->Primeiro;
-    // Percorre a lista comparando o elemento
-    while (L != NULL){
-        // Se encontrar, retorna positivamente
-        if ((FuncaoComparacao) Comparacao(L->Info, arg))
-            return True;
-        L = L->Proximo;
-    }
-    return False;
 }
 
 int ListaVazia(List * Lista){
@@ -56,15 +37,15 @@ int ListaVazia(List * Lista){
     return False;
 }
 
-int InserirLista(List * Lista, int Info){
+int InserirLista(List * Lista, void * Info){
     // Validade dos Argumentos
-    if (Lista == NULL)
+    if (Lista == NULL || Info == NULL)
         return ArgumentoInvalido;
 
     // Auxiliares
     NoLista * L;
     L = (NoLista*) malloc(sizeof(NoLista));
-    L->Info = Info;
+    L->Info    = Info;
     L->Proximo = NULL;
 
     // Insere como primeira se vazia
@@ -79,6 +60,24 @@ int InserirLista(List * Lista, int Info){
     return Sucesso;
 }
 
+NoLista * BuscarLista(List * Lista, FuncaoComparacao Comparacao, const void * arg){
+    // Validade dos Argumentos
+    if (Lista == NULL || Comparacao == NULL || arg == NULL)
+        return ArgumentoInvalido;
+
+    // Auxiliares
+    NoLista * L;
+    L = Lista->Primeiro;
+    // Percorre a lista comparando o elemento
+    while (L != NULL){
+        // Se encontrar, retorna positivamente
+        if (Comparacao(L, arg))
+            return L;
+        L = L->Proximo;
+    }
+    return False;
+}
+
 int RemoverLista(List * Lista, FuncaoComparacao Comparacao, const void * arg){
     // Validade dos Argumentos
     if (Lista == NULL || Comparacao == NULL || arg == NULL)
@@ -88,28 +87,32 @@ int RemoverLista(List * Lista, FuncaoComparacao Comparacao, const void * arg){
     NoLista * L, *LA;
     L = Lista->Primeiro;
 
+    // Controlador de quantos elementos foram removidos
+    int Quantidade = 0;
     // Percorre a lista
     while (L != NULL){
         // Se o elemento corresponder ao argumento
         if (Comparacao(L, arg)){
+            // Incrementa no contador
+            Quantidade++;
             // Se é o primeiro elemento, remove-o e torna o
             // próximo o primeiro
             if (L == Lista->Primeiro){
                 Lista->Primeiro = L->Proximo;
                 free(L);
                 L = Lista->Primeiro;
-                break;
+                continue;
             }
             // Remove do meio ou do fim
             LA->Proximo = L->Proximo;
             free(L);
             L = L->Proximo;
-            break;
+            continue;
         }
         LA = L;
         L = L->Proximo;
     }
-    return 1;
+    return Quantidade;
 }
 
 NoLista * UltimoNo(NoLista *Raiz){
@@ -129,7 +132,7 @@ NoLista *Particiona(NoLista *Primeiro, NoLista *Ultimo,
     // Troca o primeiro e o último o máximo possível
     while (Raiz != Axial){
         // Se a Raiz é maior que o primeiro
-        if (Comparacao(Raiz, Axial->Info)){
+        if (Comparacao(Raiz, Axial)){
             // Transforma o maior no Primeiro
             if ((*NovoPrimeiro) == NULL)
                 (*NovoPrimeiro) = Raiz;
@@ -191,25 +194,8 @@ NoLista *Recursao(NoLista *Primeiro, NoLista *Ultimo, FuncaoComparacao Comparaca
     return NovoPrimeiro;
 }
 
-// QuickSort
 void Ordena(NoLista ** Primeiro, FuncaoComparacao Comparacao){
     // Chama a função que de fato ordena
     (*Primeiro) = Recursao(*Primeiro, UltimoNo(*Primeiro), (FuncaoComparacao) Comparacao);
     return;
-}
-
-int ComparaChavePrimaria(NoLista * A, int B){
-    // Validade dos Argumentos
-    if (A == NULL)
-        return ArgumentoInvalido;
-
-    return (A->Info < B);
-}
-
-int ComparaChave(NoLista * A, int B){
-    // Validade dos Argumentos
-    if (A == NULL)
-        return ArgumentoInvalido;
-
-    return (A->Info == B);
 }

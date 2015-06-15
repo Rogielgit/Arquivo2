@@ -3,23 +3,24 @@
 #include <string.h>
 #include "indice.h"
 
-void Insere_Indice(Indice *ind,char *st,int bos)
+
+void Insere_Indice(List *ini,char *st,int bos)
 {
     //busca binaria
     //insere
 }
 
-Indice Cria_Indice_Autor(int size) // recebe tamanho do arquivo , para caso ele já seja > 10
+void Cria_Indice_Autor(List *ini, int size) // recebe tamanho do arquivo , para caso ele ja seja > 10
 {
     FILE *arq;
-    Indice ind;
-    ind.elem = malloc(size*sizeof(NoIndice));
-    ind.tam = 0;
+    //Indice ind;
+   // ind.elem = malloc(size*sizeof(NoIndice));
+    ///ind.tam = 0;
 
     arq = fopen("BD_livros2.bin", "rb");
     char st[100];
     int tam;
-    int bos=0;
+    int bos=4;//
     int caminha;
 
     fseek (arq ,sizeof(int),SEEK_SET); // pula o cabeçalho
@@ -40,24 +41,22 @@ Indice Cria_Indice_Autor(int size) // recebe tamanho do arquivo , para caso ele 
         caminha -= strlen(st);
         caminha -= 1;
 
-        Insere_Indice(&ind,st,bos);
-        printf("%s",ind.elem[ind.tam-1].chave);
-
+        Insere_Indice(ini,st,bos);
+       
         bos+=tam;
         caminha; //Tam do Reg - Tam TITLE - Tam AUTHOR - 1 Delimitador
         fseek(arq, caminha ,SEEK_CUR);
-
         fread(&tam,sizeof(int),1,arq);
         if (feof(arq))
             break;
     }
     fclose(arq);
-    return ind;
+    //return ind;
 }
 
 
 
-Indice Cria_Indice_Editora(int size) // recebe tamanho do arquivo , para caso ele já seja > 10
+void Cria_Indice_Editora(List *ini,int size) // recebe tamanho do arquivo , para caso ele já seja > 10
 {
     FILE *arq;
     Indice ind;
@@ -67,7 +66,7 @@ Indice Cria_Indice_Editora(int size) // recebe tamanho do arquivo , para caso el
     arq = fopen("BD_livros2.bin", "rb");
     char st[100];
     int tam;
-    int bos=0;
+    int bos=4; // soma o cabelhaco
     int caminha;
 
     fseek (arq ,sizeof(int),SEEK_SET); // pula o cabeçalho
@@ -93,8 +92,8 @@ Indice Cria_Indice_Editora(int size) // recebe tamanho do arquivo , para caso el
         caminha -= strlen(st);
         caminha -= 1; // |
 
-        Insere_Indice(&ind,st,bos);
-        printf("%s",ind.elem[ind.tam-1].chave);
+        Insere_Indice(ini,st,bos);
+        
 
         bos+=tam;
         caminha; //Tam do Reg - Tam TITLE - Tam AUTHOR - Tam editora 1 Delimitador
@@ -106,5 +105,5 @@ Indice Cria_Indice_Editora(int size) // recebe tamanho do arquivo , para caso el
     }
 
     fclose(arq);
-    return ind;
+    //return ind;
 }

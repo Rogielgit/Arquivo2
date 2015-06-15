@@ -7,10 +7,10 @@
 #define True                 1
 #define Sucesso              1
 
-typedef int (* FuncaoComparacao)(const void *, const void *);
+typedef int  (* FuncaoComparacao)(const void *, const void *);
 
 typedef struct NoLista {
-    int Info;
+    void *Info;
     struct NoLista * Proximo;
 } NoLista;
 
@@ -51,7 +51,7 @@ int ListaVazia(List * );
  *
  * @return Retorna código de erro
  */
-int InserirLista(List *, int );
+int InserirLista(List *, void * );
 
 /**
  * @brief Remove todos os elementos específicos
@@ -73,7 +73,7 @@ int RemoverLista(List *, FuncaoComparacao, const void * );
  *
  * @return Retorna código de erro
  */
-int BuscarLista (List *, FuncaoComparacao, const void * );
+NoLista * BuscarLista (List *, FuncaoComparacao, const void * );
 
 /**
  * @brief Ordena (QuickSort) a Lista
@@ -84,9 +84,5 @@ int BuscarLista (List *, FuncaoComparacao, const void * );
  * @return Retorna código de erro
  */
 void Ordena(NoLista **, FuncaoComparacao);
-
-int ComparaChavePrimaria( NoLista *, int);
-
-int ComparaChave(NoLista *, int);
 
 #endif // LISTA_H

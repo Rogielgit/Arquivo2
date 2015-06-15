@@ -20,15 +20,28 @@ typedef struct {
 void fflush_in();// função para limpar o teclado
 
 void Pesquisa_ano(int ); // procura livros sequencialmente no arquivo, de acordo com o ano oferecido
+
 char* Le_String();
+
 void Ler_dados_livro(Livro*);
+
 void fflush_in();
+
 void InsereUmLivro(FILE *,Livro);
+
 void Insere();
+
+void Remove_registro(int byteoffset);
+
 int reglen(Livro);
+
 void print_livro(Livro);
+
 void Listar();
+
 void setTopo(int value);
+
+int getTopo();
 
 void escreveRegistro(FILE*,Livro,int);
 
@@ -44,9 +57,6 @@ void adicionaNaContagemDeRegistros(int);
 void * criarIndiceSecundarioAutor(char *);
 
 // Mesma coisa da do Autor
-
-
-
 void * criarIndiceSecundarioEditora(char *);
 
 // Faz matching entre duas listas dadas no argumento

@@ -1,6 +1,8 @@
 #ifndef INDICE_H
 #define INDICE_H
 
+#include "Lista.h"
+
 typedef struct NoIndice NoIndice;
 
 typedef struct indice Indice;
@@ -18,10 +20,10 @@ struct indice
 };
 
 
-Indice Cria_Indice_Autor(int tam);
+void Cria_Indice_Autor(List *,int tam);
 
-Indice Cria_Indice_Editora(int tam);
+void Cria_Indice_Editora(List*,int tam);
 
-void Insere_Indice(Indice *ind,char *st,int bos);
+void Insere_Indice(List *,char *st,int byteoffset);
 
 #endif
