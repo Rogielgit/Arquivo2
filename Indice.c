@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+
 #include "Indice.h"
 
 int ComparaNomeNasListas( NoLista * A, char * B ){
@@ -14,11 +15,26 @@ int ComparaNomeNasListas( NoLista * A, char * B ){
     return !strcmp(BlocoSecundario->Info, B);
 }
 
-int InserirIndiceSecundario(List *ListaDeSecundarios, char * Info, int ByteOffSet){
+int ComparaByteOffSetNasListas(NoLista * ListaInvertida, int ByteOffSet){
+    BlocoDaInvertida * BlocoInvertida;
+    BlocoInvertida = ListaInvertida->Info;
+
+    return (BlocoInvertida->ByteOffSet == ByteOffSet);
+}
+
+
+int ComparaByteOffSetNasListasParaOrdenacao(NoLista * ListaInvertida, int ByteOffSet){
+    BlocoDaInvertida * BlocoInvertida;
+    BlocoInvertida = ListaInvertida->Info;
+
+    return (BlocoInvertida->ByteOffSet > ByteOffSet);
+}
+
+int InserirIndiceSecundario(List * ListaDeSecundarios, char * Info, int ByteOffSet){
     BlocoDoSecundario * BlocoSecundario;
 
     BlocoDaInvertida  * BlocoInvertida;
-    BlocoInvertida = (BlocoDaInvertida*) malloc(sizeof(BlocoDaInvertida));
+    BlocoInvertida = (BlocoDaInvertida *) malloc(sizeof(BlocoDaInvertida));
     BlocoInvertida->ByteOffSet = ByteOffSet;
 
     NoLista * No = BuscarLista(ListaDeSecundarios, (FuncaoComparacao) ComparaNomeNasListas, Info);
@@ -40,6 +56,18 @@ int InserirIndiceSecundario(List *ListaDeSecundarios, char * Info, int ByteOffSe
     return 1;
 }
 
+int RemoverIndiceSecundario(List * ListaDeSecundarios, char * Nome, int ByteOffSet){
+    NoLista * NoDaListaDeSecundarios = BuscarLista(ListaDeSecundarios, (FuncaoComparacao) ComparaNomeNasListas, Nome);
+    if (NoDaListaDeSecundarios == NULL)
+        return 0;
+    BlocoDoSecundario * BlocoSecundario;
+    BlocoSecundario = NoDaListaDeSecundarios->Info;
+    int Result = RemoverLista(BlocoSecundario->ListaInvertida, (FuncaoComparacao) ComparaByteOffSetNasListas, ByteOffSet);
+    if (ListaVazia(BlocoSecundario->ListaInvertida))
+        RemoverLista(ListaDeSecundarios, (FuncaoComparacao) ComparaNomeNasListas, Nome);
+    return Result;
+}
+
 List * CriaIndiceAutor() // recebe tamanho do Arquivouivo , para caso ele j? seja > 10
 {
     FILE * Arquivo;
@@ -47,7 +75,7 @@ List * CriaIndiceAutor() // recebe tamanho do Arquivouivo , para caso ele j? sej
     ListaDeSecundarios = CriaLista();
 
     Arquivo = fopen("BD_livros2.bin", "rb");
-    char NomeAux[100];
+    char NomeAutor[100];
     int Tamanho;
     int ByteOffSet=0;
     int caminha;
@@ -60,33 +88,27 @@ List * CriaIndiceAutor() // recebe tamanho do Arquivouivo , para caso ele j? sej
         if(feof(Arquivo))
             break;
         caminha = Tamanho;
-        printf("%d -",Tamanho);
-        fscanf(Arquivo,"%[^|]s",NomeAux); // ler o titulo
+        fscanf(Arquivo,"%[^|]s",NomeAutor); // ler o titulo
         fseek(Arquivo,sizeof(char),SEEK_CUR);
-        caminha -= strlen(NomeAux);
+        caminha -= strlen(NomeAutor);
 
-        fscanf(Arquivo,"%[^|]s",NomeAux); // ler Autor
-        if (NomeAux[0] != '*')
-        {
-            
-            printf("%s\n",NomeAux);
-            caminha -= strlen(NomeAux);
-            caminha -= 1;
+        fscanf(Arquivo,"%[^|]s",NomeAutor); // ler Autor
+        caminha -= strlen(NomeAutor);
+        caminha -= 1;
 
-            InserirIndiceSecundario(ListaDeSecundarios, NomeAux, ByteOffSet);
+        InserirIndiceSecundario(ListaDeSecundarios, NomeAutor, ByteOffSet);
 
-            ByteOffSet+=Tamanho;
-            fseek(Arquivo, caminha ,SEEK_CUR);
+        ByteOffSet+=Tamanho;
+        fseek(Arquivo, caminha ,SEEK_CUR);
 
-            fread(&Tamanho, sizeof(int), 1, Arquivo);
-            if (feof(Arquivo))
+        fread(&Tamanho, sizeof(int), 1, Arquivo);
+        if (feof(Arquivo))
             break;
-        }
     }
-
     fclose(Arquivo);
     return ListaDeSecundarios;
 }
+
 
 
 List * CriaIndiceEditora() // recebe tamanho do Arquivouivo , para caso ele j? seja > 10
@@ -96,7 +118,7 @@ List * CriaIndiceEditora() // recebe tamanho do Arquivouivo , para caso ele j? s
     ListaDeSecundarios = CriaLista();
 
     Arquivo = fopen("BD_livros2.bin", "rb");
-    char NomeAux[100];
+    char NomeEditora[100];
     int Tamanho;
     int ByteOffSet = 0;
     int caminha;
@@ -109,34 +131,102 @@ List * CriaIndiceEditora() // recebe tamanho do Arquivouivo , para caso ele j? s
         if(feof(Arquivo))
             break;
         caminha = Tamanho;
-        printf("%d -",Tamanho);
-        fscanf(Arquivo,"%[^|]s",NomeAux); // ler o titulo
-        if (NomeAux[0] == '*')
-        {
-            fseek(Arquivo,sizeof(char),SEEK_CUR);
-            caminha -= strlen(NomeAux);
+        fscanf(Arquivo,"%[^|]s",NomeEditora); // ler o titulo
+        fseek(Arquivo,sizeof(char),SEEK_CUR);
+        caminha -= strlen(NomeEditora) + 1;
 
-            fscanf(Arquivo,"%[^|]s",NomeAux); // ler Autor
-            printf("%s\n",NomeAux);
-            caminha -= strlen(NomeAux);
-            caminha -= 1; // |
+        fscanf(Arquivo,"%[^|]s",NomeEditora); // ler Autor
+        fseek(Arquivo,sizeof(char),SEEK_CUR);
+        caminha -= strlen(NomeEditora);
+        caminha -= 1; // |
 
-            fscanf(Arquivo,"%[^|]s",NomeAux); // ler editora
-            printf("%s\n",NomeAux);
-            caminha -= strlen(NomeAux);
-            caminha -= 1; // |
+        fscanf(Arquivo,"%[^|]s",NomeEditora); // ler editora
+        fseek(Arquivo,sizeof(char),SEEK_CUR);
+        caminha -= strlen(NomeEditora);
+        caminha -= 1; // |
 
-            InserirIndiceSecundario(ListaDeSecundarios, NomeAux,ByteOffSet);
+        InserirIndiceSecundario(ListaDeSecundarios, NomeEditora, ByteOffSet);
 
-            ByteOffSet += Tamanho;
-            fseek(Arquivo, caminha ,SEEK_CUR);
+        ByteOffSet += Tamanho;
+        fseek(Arquivo, caminha ,SEEK_CUR);
 
-            fread(&Tamanho, sizeof(int), 1, Arquivo);
-            if (feof(Arquivo))
-                break;
-        }
+        fread(&Tamanho, sizeof(int), 1, Arquivo);
+        if (feof(Arquivo))
+            break;
     }
     fclose(Arquivo);
     return ListaDeSecundarios;
 }
 
+List * Merging(List * ListaInvertida1, List * ListaInvertida2){
+    List * ListaResultado;
+    ListaResultado = CriaLista();
+    Ordena(&(ListaInvertida1->Primeiro), (FuncaoComparacao) ComparaByteOffSetNasListasParaOrdenacao);
+    Ordena(&(ListaInvertida2->Primeiro), (FuncaoComparacao) ComparaByteOffSetNasListasParaOrdenacao);
+
+    NoLista * No1, * No2;
+    No1 = ListaInvertida1->Primeiro;
+    No2 = ListaInvertida2->Primeiro;
+
+    while(No1 != NULL && No2 != NULL){
+
+        BlocoDaInvertida * BlocoInvertida1;
+        BlocoDaInvertida * BlocoInvertida2;
+        BlocoInvertida1  = No1->Info;
+        BlocoInvertida2  = No2->Info;
+
+        if (BlocoInvertida1->ByteOffSet > BlocoInvertida2->ByteOffSet){
+            InserirLista(ListaResultado, BlocoInvertida2);
+            No2 = No2->Proximo;
+        }
+        else if (BlocoInvertida1->ByteOffSet < BlocoInvertida2->ByteOffSet){
+            InserirLista(ListaResultado, BlocoInvertida1);
+            No1 = No1->Proximo;
+        }
+        else{
+            InserirLista(ListaResultado, BlocoInvertida1);
+            No1 = No1->Proximo;
+            No2 = No2->Proximo;
+        }
+    }
+    if (No1 == NULL)
+        No1 = No2;
+
+    while (No1 != NULL){
+        BlocoDaInvertida * BlocoInvertida;
+        BlocoInvertida = No1->Info;
+        InserirLista(ListaResultado, BlocoInvertida);
+        No1 = No1->Proximo;
+    }
+    return ListaResultado;
+}
+
+List * Matching(List * ListaInvertida1, List * ListaInvertida2){
+    List * ListaResultado;
+    ListaResultado = CriaLista();
+    Ordena(&(ListaInvertida1->Primeiro), (FuncaoComparacao) ComparaByteOffSetNasListasParaOrdenacao);
+    Ordena(&(ListaInvertida2->Primeiro), (FuncaoComparacao) ComparaByteOffSetNasListasParaOrdenacao);
+
+    NoLista * No1, * No2;
+    No1 = ListaInvertida1->Primeiro;
+    No2 = ListaInvertida2->Primeiro;
+
+    while(No1 != NULL && No2 != NULL){
+
+        BlocoDaInvertida * BlocoInvertida1;
+        BlocoDaInvertida * BlocoInvertida2;
+        BlocoInvertida1  = No1->Info;
+        BlocoInvertida2  = No2->Info;
+
+        if (BlocoInvertida1->ByteOffSet > BlocoInvertida2->ByteOffSet)
+            No2 = No2->Proximo;
+        else if (BlocoInvertida1->ByteOffSet < BlocoInvertida2->ByteOffSet)
+            No1 = No1->Proximo;
+        else{
+            InserirLista(ListaResultado, BlocoInvertida1);
+            No1 = No1->Proximo;
+            No2 = No2->Proximo;
+        }
+    }
+    return ListaResultado;
+}

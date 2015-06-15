@@ -157,7 +157,7 @@ int byteoffsetWorstFit(int tam_reg){
         fseek(arq,sizeof(char),SEEK_CUR); // |
 
         fread(&proximoPilha,sizeof(int),1,arq); // como eh um arquivo removido, contém o proximo topo da pilha e não o ano
-
+        printf("tamAtual: %d\n",tamAtual);
         if(tamAtual >= MaiorTam)
         {   
             MaiorTam = tamAtual;
@@ -181,16 +181,24 @@ int byteoffsetWorstFit(int tam_reg){
         fseek(arq,sizeof(char),SEEK_CUR); // |
         
         printf("anterior, anteriorPilha, topoPilha, proximoPilha %d %d %d %d\n",anterior,anteriorPilha,topoPilha,proximoPilha );
-        if (topoPilha != -1){
-           // anteriorPilha = -1;
+        if (topoPilha != -1)
             fwrite(&topoPilha,sizeof(int),1,arq);
-          //  setTopo(-1);
-
-        }
+        
+        else if(topoPilha == -1)
+        {   
+            fseek(arq, anteriorPilha + sizeof(int), SEEK_SET);// acessar o ultimo que chamou
+            fread(&tamAtual,sizeof(int),1,arq);
+            fscanf(arq,"%[^|]s",NomeAux);//restante do titulo
+            fseek(arq,sizeof(char),SEEK_CUR); // |
+            fscanf(arq, "%[^|]s",NomeAux); // autor
+            fseek(arq,sizeof(char),SEEK_CUR); // |
+            fscanf(arq, "%[^|]s",NomeAux); // Editora
+            fseek(arq,sizeof(char),SEEK_CUR); // |
+            fwrite(&topoPilha,sizeof(int),1,arq);
+        }       
         else
-        {
             setTopo(-1);
-        }
+        
         fclose(arq);
         return anteriorPilha;
     }
@@ -239,8 +247,7 @@ void Insere(){
     char op = 's';
    // fseek(arq, sizeof(int), SEEK_SET); // pula o cabeçalho da pilha
     while(op == 's' || op == 'S'){
-        
-        printf("inseriu: \n");
+                
         Ler_dados_livro(&L);
         InsereUmLivro(arq,L);
         printf("Registrar mais um Livro? (S/N)\n");
@@ -429,7 +436,7 @@ void Remove_registro(int byteoffset)
     
     fseek(arq,byteoffset,SEEK_CUR); 
     fread(&tamRegistro,sizeof(int),1,arq); // ler o tamanho
-    
+    printf("TaRemovido: %d\n",tamRegistro );
     fwrite(&removido,sizeof(char),1,arq);
     fscanf(arq,"%[^|]s",aux); //restante do titulo    
     fseek (arq,sizeof(char), SEEK_CUR);

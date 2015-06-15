@@ -45,6 +45,16 @@ int getTopo();
 
 void escreveRegistro(FILE*,Livro,int);
 
+void Pesquisa_autor(List *, char *);
+
+void Pesquisa_editora(List *, char *);
+
+void Pesquisa_autor_ou_editora(List *, List *, char *, char *);
+
+void Pesquisa_autor_e_editora(List *, List *, char *, char *);
+
+void  Organiza_remocao(List *, char *);
+
 int Tamanho_Arquivos();
 // Soma ou subtrai do contador de registros
 // Para criação do índice, que só é feita quando há 10+ registros.

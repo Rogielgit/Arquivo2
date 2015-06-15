@@ -109,7 +109,7 @@ int main()
         else if(op == '8')
         {
             Remove_registro(0);
-            //Remove_registro(24);
+            Remove_registro(25);
             //Remove_registro(48);
 
            

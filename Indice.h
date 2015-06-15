@@ -16,10 +16,20 @@ typedef struct {
 
 int InserirIndiceSecundario(List *, char *, int);
 
+int RemoverIndiceSecundario(List *, char *, int);
+
 int ComparaNomeNasListas(NoLista *, char *);
+
+int ComparaByteOffSetNasListas(NoLista *, int);
+
+int ComparaByteOffSetNasListasParaOrdenacao(NoLista *, int);
 
 List * CriaIndiceAutor();
 
 List * CriaIndiceEditora();
+
+List * Merging(List *, List *);
+
+List * Matching(List *, List *);
 
 #endif // INDICE_H

@@ -6,8 +6,7 @@ List * CriaLista(){
     List * Lista;
     Lista = (List*)malloc(sizeof(List));
     Lista->Primeiro = NULL;
-
-return Lista;
+    return Lista;
 }
 
 int DestroiLista(List * Lista){
