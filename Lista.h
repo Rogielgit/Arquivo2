@@ -9,7 +9,7 @@
 
 typedef int  (* FuncaoComparacao)(const void *, const void *);
 
-typedef struct NoLista { 
+typedef struct NoLista {
     void           *    Info;
     struct NoLista * Proximo;
 } NoLista;

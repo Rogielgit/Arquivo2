@@ -16,7 +16,6 @@ int main()
     int ano;
     char Autor[30],Editora[30];
 
-    List *segAutor,*segEditora;
   //Indice aut_ind,edi_ind;
 
    //aut_ind.tam=-1;
@@ -54,22 +53,20 @@ int main()
         printf("3-Listar\n");
         printf("4-Pesquisa Autor\n");
         printf("5-Pesquisa Editora\n");
-        printf("6-Pesquisa Autor e Editora\n");
-        printf("7-Pesquisa Autor ou Editora\n");
+        printf("6-Pesquisa Autor Uniao Editora\n");
+        printf("7-Pesquisa Autor Intersecao Editora\n");
         printf("8-Remove\n");
         printf("9-Sair\n\n\n");
         printf("Opcao Desejada: ");
         setbuf(stdin,NULL);
         scanf(" %c",&op);
+        fflush_in();
         ///criar o indice somente quando chegar a 10.
         switch (op){
             case '1':
                 setbuf(stdin,NULL);
-                Livro L;
-                // Ler_dados_livro(&L);
-                // InsereUmLivro(L);
                 Insere();
-                tamanho =Tamanho_Arquivos();
+                tamanho = Tamanho_Arquivos();
                 break;
             case '2':
                 printf("Ano: ");
@@ -81,13 +78,11 @@ int main()
                 Listar();
                 break;
             case '4':
-                fflush_in();
                 printf("Autor: ");
                 scanf("%[^\n]%*c", Autor);
                 Pesquisar(IndiceSecundarioAutor, Autor);
                 break;
             case '5':
-                fflush_in();
                 printf("Editora: ");
                 scanf("%[^\n]%*c", Editora);
                 Pesquisar(IndiceSecundarioEditora, Editora);
@@ -97,14 +92,14 @@ int main()
                 scanf("%[^\n]%*c", Autor);
                 printf("Editora: ");
                 scanf("%[^\n]%*c", Editora);
-                PesquisarPeloAutorEPelaEditora(IndiceSecundarioAutor, IndiceSecundarioEditora, Autor, Editora);
+                PesquisarPeloAutorUniaoEditora(IndiceSecundarioAutor, IndiceSecundarioEditora, Autor, Editora);
                 break;
             case '7':
                 printf("Autor: ");
                 scanf("%[^\n]%*c", Autor);
                 printf("Editora: ");
                 scanf("%[^\n]%*c", Editora);
-                PesquisarPeloAutorOuPelaEditora(IndiceSecundarioAutor, IndiceSecundarioEditora, Autor, Editora);
+                PesquisarPeloAutorIntersecaoEditora(IndiceSecundarioAutor, IndiceSecundarioEditora, Autor, Editora);
                 break;
             case '8':
                 printf("Autor: ");

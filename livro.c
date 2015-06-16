@@ -23,9 +23,9 @@ char* Le_String()
 {
     char *str,leit[100];
     setbuf(stdin,NULL);
-    scanf("%[^\n]s",leit);
+    scanf("%[^\n]%*c", leit);
     str = (char*)malloc( sizeof(char) * strlen(leit) );
-    strcpy(str,leit);
+    strcpy(str, leit);
     return str;
 }
 
@@ -64,7 +64,7 @@ void Ler_dados_livro(Livro *Dados)
 
 }
 
-void escreveRegistro(FILE *arq,Livro L,int byteoffset, int valorInsuf)  //escreve na posicao atual no arquivo passado
+void escreveRegistro(FILE * arq, Livro L, int byteoffset, int valorInsuf)  //escreve na posicao atual no arquivo passado
 {
 
     char c = '|';
@@ -121,6 +121,33 @@ void setTopo(int value){ // funcao para colocar elemento no topo da pilha
     Topo = value;
     fwrite(&Topo,sizeof(int),1,File);
     fclose(File);
+}
+
+void Remove_registro(int byteoffset)
+{
+    FILE *arq;
+    int tamRegistro,topo;
+    char aux[50],removido = '*';
+    arq = fopen("BD_livros2.bin","rb+");     // tratar erro
+
+    fseek (arq,sizeof(int),SEEK_SET); // pula cabecalho da pilha
+
+    fseek(arq,byteoffset,SEEK_CUR);
+    fread(&tamRegistro,sizeof(int),1,arq); // ler o tamanho
+    printf("TaRemovido: %d\n",tamRegistro );
+    fwrite(&removido,sizeof(char),1,arq);
+    fscanf(arq,"%[^|]s",aux); //restante do titulo
+    fseek (arq,sizeof(char), SEEK_CUR);
+    fscanf(arq,"%[^|]s",aux); // autor
+    fseek (arq,sizeof(char), SEEK_CUR);
+    fscanf(arq,"%[^|]s",aux); // editora
+    fseek (arq,sizeof(char),SEEK_CUR);
+
+    topo = getTopo();
+    fwrite(&topo,sizeof(int),1,arq); // salva o topo da pilha no ano
+    setTopo(byteoffset);
+
+    fclose(arq);
 }
 
 int byteoffsetWorstFit(int tam_reg, int *valorInsuf){
@@ -221,7 +248,6 @@ int byteoffsetWorstFit(int tam_reg, int *valorInsuf){
     fclose(arq);
     return -1;
 }
-
 
 int Tamanho_Arquivos()
 {
@@ -464,36 +490,6 @@ void Pesquisa_ano(int Ano_procurado)
     fclose(arq);
 }
 
-
-
-void Remove_registro(int byteoffset)
-{
-    FILE *arq;
-    int tamRegistro,topo;
-    char aux[50],removido = '*';
-    arq = fopen("BD_livros2.bin","rb+");     // tratar erro
-
-    fseek (arq,sizeof(int),SEEK_SET); // pula cabecalho da pilha
-
-    fseek(arq,byteoffset,SEEK_CUR);
-    fread(&tamRegistro,sizeof(int),1,arq); // ler o tamanho
-    printf("TaRemovido: %d\n",tamRegistro );
-    fwrite(&removido,sizeof(char),1,arq);
-    fscanf(arq,"%[^|]s",aux); //restante do titulo
-    fseek (arq,sizeof(char), SEEK_CUR);
-    fscanf(arq,"%[^|]s",aux); // autor
-    fseek (arq,sizeof(char), SEEK_CUR);
-    fscanf(arq,"%[^|]s",aux); // editora
-    fseek (arq,sizeof(char),SEEK_CUR);
-
-    topo = getTopo();
-    fwrite(&topo,sizeof(int),1,arq); // salva o topo da pilha no ano
-    setTopo(byteoffset);
-
-    fclose(arq);
-}
-
-
 Livro * ResgatarRegistro(int ByteOffSet){
     int tamanhoRegistro;
     char Auxiliar[100];
@@ -560,13 +556,140 @@ void ListarLivro(Livro * L){
     printf("\nPreco    : %.2f", L->PRICE);
 }
 
-void Pesquisar(List * ListaDeAutores, char * Nome){
+void Pesquisar(List * ListaDeSecundarios, char * Nome){
+    NoLista * No = BuscarLista(ListaDeSecundarios, (FuncaoComparacao) ComparaNomeNasListas, Nome);
+    Livro   * L;
+    char Escolha;
 
+    if (No == False){
+        printf("\n%s nao encontrado(a).\n", Nome);
+        return;
+    }
+
+    BlocoDoSecundario * BlocoSecundario;
+    BlocoDaInvertida  * BlocoInvertida;
+
+    BlocoSecundario = No->Info;
+    No = BlocoSecundario->ListaInvertida->Primeiro;
+
+    while (No != NULL){
+        BlocoInvertida = No->Info;
+        L = ResgatarRegistro(BlocoInvertida->ByteOffSet);
+        ListarLivro(L);
+        EscolhaContinuidade:
+            printf("\n\nContinuar listando? (S/N)\nResposta: ");
+            scanf("%c", &Escolha);
+            fflush_in();
+            switch (Escolha){
+                case 'S': case 's':
+                    No = No->Proximo;
+                case 'N': case 'n': return;
+                default: goto EscolhaContinuidade;
+            }
+    }
 }
 
-void PesquisarPeloAutorOuPelaEditora(List * ListaDeAutores, List * ListaDeEditoras, char * Autor, char * Editora){}
+void PesquisarPeloAutorIntersecaoEditora(List * ListaDeAutores, List * ListaDeEditoras, char * Autor, char * Editora){
+    NoLista * NoAutor = BuscarLista(ListaDeAutores , (FuncaoComparacao) ComparaNomeNasListas, Autor);
+    NoLista * NoEdito = BuscarLista(ListaDeEditoras, (FuncaoComparacao) ComparaNomeNasListas, Editora);
+    NoLista * No;
+    Livro   * L;
+    List    * ListaResultado;
+    char Escolha;
 
-void PesquisarPeloAutorEPelaEditora(List * ListaDeAutores, List * ListaDeEditoras, char * Autor, char * Editora){}
+    if (NoAutor == False && NoEdito == False){
+        printf("Nada encontrado.\n");
+        return;
+    }
+
+    BlocoDoSecundario * BlocoSecundarioAutor;
+    BlocoDoSecundario * BlocoSecundarioEditora;
+    BlocoDaInvertida  * BlocoInvertida;
+
+    if (NoAutor == False){
+        BlocoSecundarioAutor = (BlocoDoSecundario *) malloc(sizeof(BlocoDoSecundario));
+        BlocoSecundarioAutor->ListaInvertida = CriaLista();
+    }
+    else
+        BlocoSecundarioAutor   = NoAutor->Info;
+
+    if (NoEdito == False){
+        BlocoSecundarioEditora = (BlocoDoSecundario *) malloc(sizeof(BlocoDoSecundario));
+        BlocoSecundarioEditora->ListaInvertida = CriaLista();
+    }
+    else
+        BlocoSecundarioEditora = NoEdito->Info;
+
+    ListaResultado = Matching(BlocoSecundarioAutor->ListaInvertida, BlocoSecundarioEditora->ListaInvertida);
+
+    No = ListaResultado->Primeiro;
+    while (No != NULL){
+        BlocoInvertida = No->Info;
+        L = ResgatarRegistro(BlocoInvertida->ByteOffSet);
+        ListarLivro(L);
+        EscolhaContinuidade:
+            printf("\n\nContinuar listando? (S/N)\nResposta: ");
+            scanf("%c", &Escolha);
+            fflush_in();
+            switch (Escolha){
+                case 'S': case 's':
+                    No = No->Proximo;
+                case 'N': case 'n': return;
+                default: goto EscolhaContinuidade;
+            }
+    }
+}
+
+void PesquisarPeloAutorUniaoEditora(List * ListaDeAutores, List * ListaDeEditoras, char * Autor, char * Editora){
+    NoLista * NoAutor = BuscarLista(ListaDeAutores , (FuncaoComparacao) ComparaNomeNasListas, Autor);
+    NoLista * NoEdito = BuscarLista(ListaDeEditoras, (FuncaoComparacao) ComparaNomeNasListas, Editora);
+    NoLista * No;
+    Livro   * L;
+    List    * ListaResultado;
+    char Escolha;
+
+    if (NoAutor == False && NoEdito == False){
+        printf("Nada encontrado.\n");
+        return;
+    }
+
+    BlocoDoSecundario * BlocoSecundarioAutor;
+    BlocoDoSecundario * BlocoSecundarioEditora;
+    BlocoDaInvertida  * BlocoInvertida;
+
+    if (NoAutor == False){
+        BlocoSecundarioAutor = (BlocoDoSecundario *) malloc(sizeof(BlocoDoSecundario));
+        BlocoSecundarioAutor->ListaInvertida = CriaLista();
+    }
+    else
+        BlocoSecundarioAutor   = NoAutor->Info;
+
+    if (NoEdito == False){
+        BlocoSecundarioEditora = (BlocoDoSecundario *) malloc(sizeof(BlocoDoSecundario));
+        BlocoSecundarioEditora->ListaInvertida = CriaLista();
+    }
+    else
+        BlocoSecundarioEditora = NoEdito->Info;
+
+    ListaResultado = Merging(BlocoSecundarioAutor->ListaInvertida, BlocoSecundarioEditora->ListaInvertida);
+
+    No = ListaResultado->Primeiro;
+    while (No != NULL){
+        BlocoInvertida = No->Info;
+        L = ResgatarRegistro(BlocoInvertida->ByteOffSet);
+        ListarLivro(L);
+        EscolhaContinuidade:
+            printf("\n\nContinuar listando? (S/N)\nResposta: ");
+            scanf("%c", &Escolha);
+            fflush_in();
+            switch (Escolha){
+                case 'S': case 's':
+                    No = No->Proximo;
+                case 'N': case 'n': return;
+                default: goto EscolhaContinuidade;
+            }
+    }
+}
 
 void  OrganizaRemocao(List * ListaDeSecundarios, List * ListaDeSecundariosExtensao, char * Nome){
     NoLista * No = BuscarLista(ListaDeSecundarios, (FuncaoComparacao) ComparaNomeNasListas, Nome);
@@ -598,7 +721,7 @@ void  OrganizaRemocao(List * ListaDeSecundarios, List * ListaDeSecundariosExtens
                 case 'S': case 's':
                     Remove_registro(BlocoInvertida->ByteOffSet);
                     RemoverIndiceSecundario(ListaDeSecundarios, Nome, BlocoInvertida->ByteOffSet);
-                    RemoverIndiceSecundario(ListaDeSecundariosExtensao, L->PUBLISHER, BlocoInvertida->ByteOffSet  );
+                    RemoverIndiceSecundario(ListaDeSecundariosExtensao, L->PUBLISHER, BlocoInvertida->ByteOffSet);
                     printf("\n\n|Livro Removido!|\n\n");
                     break;
                 case 'N': case 'n': break;

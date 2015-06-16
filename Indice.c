@@ -8,7 +8,7 @@ int ComparaNomeNasListas( NoLista * A, char * B ){
     // Validade dos Argumentos
     if (A == NULL || B == NULL)
         return ArgumentoInvalido;
- 
+
     BlocoDoSecundario * BlocoSecundario;
     BlocoSecundario = A->Info;
     // Retorna verdadeiro se corresponde
@@ -68,38 +68,40 @@ int RemoverIndiceSecundario(List * ListaDeSecundarios, char * Nome, int ByteOffS
     return Result;
 }
 
-List * CriaIndiceAutor() // recebe tamanho do Arquivouivo , para caso ele j? seja > 10
-{
+List * CriaIndiceAutor(){
     FILE * Arquivo;
     List * ListaDeSecundarios;
     ListaDeSecundarios = CriaLista();
 
     Arquivo = fopen("BD_livros2.bin", "rb");
     char NomeAutor[100];
+    char NomeTitulo[100];
     int Tamanho;
     int ByteOffSet=0;
     int caminha;
 
-    fseek (Arquivo ,sizeof(int),SEEK_SET); // pula o cabe?alho
-    fread(&Tamanho,sizeof(int),1,Arquivo);
+    fseek (Arquivo, sizeof(int), SEEK_SET); // pula o cabe?alho
+    fread(&Tamanho, sizeof(int), 1, Arquivo);
 
     while(1)
     {
         if(feof(Arquivo))
             break;
         caminha = Tamanho;
-        fscanf(Arquivo,"%[^|]s",NomeAutor); // ler o titulo
-        fseek(Arquivo,sizeof(char),SEEK_CUR);
+        fscanf(Arquivo,"%[^|]s", NomeTitulo); // ler o titulo
+        fseek (Arquivo,sizeof(char), SEEK_CUR);
         caminha -= strlen(NomeAutor);
 
-        fscanf(Arquivo,"%[^|]s",NomeAutor); // ler Autor
+        fscanf(Arquivo,"%[^|]s", NomeAutor); // ler Autor
+
         caminha -= strlen(NomeAutor);
         caminha -= 1;
 
-        InserirIndiceSecundario(ListaDeSecundarios, NomeAutor, ByteOffSet);
+        if (NomeTitulo[0] != '*')
+            InserirIndiceSecundario(ListaDeSecundarios, NomeAutor, ByteOffSet);
 
-        ByteOffSet+=Tamanho;
-        fseek(Arquivo, caminha ,SEEK_CUR);
+        ByteOffSet += Tamanho;
+        fseek(Arquivo, caminha, SEEK_CUR);
 
         fread(&Tamanho, sizeof(int), 1, Arquivo);
         if (feof(Arquivo))
@@ -119,6 +121,7 @@ List * CriaIndiceEditora() // recebe tamanho do Arquivouivo , para caso ele j? s
 
     Arquivo = fopen("BD_livros2.bin", "rb");
     char NomeEditora[100];
+    char NomeTitulo[100];
     int Tamanho;
     int ByteOffSet = 0;
     int caminha;
@@ -131,7 +134,7 @@ List * CriaIndiceEditora() // recebe tamanho do Arquivouivo , para caso ele j? s
         if(feof(Arquivo))
             break;
         caminha = Tamanho;
-        fscanf(Arquivo,"%[^|]s",NomeEditora); // ler o titulo
+        fscanf(Arquivo,"%[^|]s", NomeTitulo); // ler o titulo
         fseek(Arquivo,sizeof(char),SEEK_CUR);
         caminha -= strlen(NomeEditora) + 1;
 
@@ -145,7 +148,8 @@ List * CriaIndiceEditora() // recebe tamanho do Arquivouivo , para caso ele j? s
         caminha -= strlen(NomeEditora);
         caminha -= 1; // |
 
-        InserirIndiceSecundario(ListaDeSecundarios, NomeEditora, ByteOffSet);
+        if (NomeTitulo[0] != '*')
+            InserirIndiceSecundario(ListaDeSecundarios, NomeEditora, ByteOffSet);
 
         ByteOffSet += Tamanho;
         fseek(Arquivo, caminha ,SEEK_CUR);

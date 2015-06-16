@@ -10,7 +10,7 @@ typedef struct {
     List * ListaInvertida;
 } BlocoDoSecundario;
 
-typedef struct { 
+typedef struct {
     int ByteOffSet;
 } BlocoDaInvertida;
 
