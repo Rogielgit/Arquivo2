@@ -290,7 +290,7 @@ void Insere(){
     printf("Erro ao abrir arquivo!!!");
     Livro L;
     char op = 's';
-   // fseek(arq, sizeof(int), SEEK_SET); // pula o cabe?alho da pilha
+   
     while(op == 's' || op == 'S'){
 
         Ler_dados_livro(&L);
@@ -304,7 +304,6 @@ void Insere(){
 
             printf("Opcao Invalida!!\n");
             fflush(stdin);
-
             scanf("%c", &op);
         }
 
