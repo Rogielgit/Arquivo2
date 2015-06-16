@@ -4,7 +4,7 @@
 #include <string.h>
 #include "livro.h"
 
-void fflush_in(){// função para limpar o teclado 
+void fflush_in(){// função para limpar o teclado
 
     getchar();
 }
@@ -64,23 +64,17 @@ void Ler_dados_livro(Livro *Dados)
 
 }
 
-void escreveRegistro(FILE *arq,Livro L,int byteoffset, int valorInsuf)  //escreve na posicao atual no arquivo passado
+void escreveRegistro(FILE *arq,Livro L,int byteoffset)  //escreve na posicao atual no arquivo passado
 {
- 
+
     char c = '|';
     int tam_registro_inserir = reglen(L);
     if(byteoffset == -1)
-    {
         fseek(arq,0,SEEK_END);
-        fwrite(&tam_registro_inserir,sizeof(int), 1, arq);
-    }
-    else if (valorInsuf == EscrevetamanhoOriginal)
-        fseek(arq,2*sizeof(int) + byteoffset,SEEK_SET); // nao substitue o tamanho original
     else
-    {
         fseek(arq,byteoffset + sizeof(int),SEEK_SET);
-        fwrite(&tam_registro_inserir,sizeof(int), 1, arq);
-    }
+
+    fwrite(&tam_registro_inserir,sizeof(int), 1, arq);
 
     fwrite(L.TITLE, sizeof(char), strlen(L.TITLE), arq);
     fwrite(&c,sizeof(char), 1, arq); //colocando delimitador
@@ -125,64 +119,36 @@ void setTopo(int value){ // funcao para colocar elemento no topo da pilha
     fclose(File);
 }
 
-void Remove_registro(int byteoffset)
-{
-    FILE *arq;
-    int tamRegistro,topo;
-    char aux[50],removido = '*';
-    arq = fopen("BD_livros2.bin","rb+");     // tratar erro
-
-    fseek (arq,sizeof(int),SEEK_SET); // pula cabecalho da pilha
-    
-    fseek(arq,byteoffset,SEEK_CUR); 
-    fread(&tamRegistro,sizeof(int),1,arq); // ler o tamanho
-    printf("TaRemovido: %d\n",tamRegistro );
-    fwrite(&removido,sizeof(char),1,arq);
-    fscanf(arq,"%[^|]s",aux); //restante do titulo    
-    fseek (arq,sizeof(char), SEEK_CUR);
-    fscanf(arq,"%[^|]s",aux); // autor 
-    fseek (arq,sizeof(char), SEEK_CUR);
-    fscanf(arq,"%[^|]s",aux); // editora
-    fseek (arq,sizeof(char),SEEK_CUR);
-    
-    topo = getTopo();
-    fwrite(&topo,sizeof(int),1,arq); // salva o topo da pilha no ano
-    setTopo(byteoffset);
-
-    fclose(arq);
-}
-
-int byteoffsetWorstFit(int tam_reg, int *valorInsuf){
+int byteoffsetWorstFit(int tam_reg){
     // Retornos:      -1 se nao houver registro deletado maior do que o tamanho passado
     //                -1 se nao houver nenhum reg. deletado
     //                (int)byte offset do maior registro deletado
     FILE *arq;
     int topoPilha, anteriorPilha, proximoPilha;
-    int tamAtual, anterior;    
-    int offsetMaior = -1,diferenca,topo;
-    int MaiorTam = 0, flag = 0;
-    int proxRemovido;
-    char aux,removido = '*', NomeAux[50];
-    char c = '|';
+    int tamAtual, anterior;
+    int offsetMaior = -1;
+    int MaiorTam = 0;
+    int flag = 0; // contador de delimitadores
+    char aux,asterisco, NomeAux[50];
     arq = fopen("BD_livros2.bin", "rb+");
     topoPilha = anteriorPilha = proximoPilha = getTopo(); //offset do proximo removido
     if(proximoPilha == -1)
     { //Se o topo da pilha for -1
-        fclose(arq);   
+        fclose(arq);
         return -1;
-        
+
     }
     while(!feof(arq))
-    {   
-       
+    {
+
         if(proximoPilha == -1) //Se o topo da pilha for -1
-            break;      
+            break;
 
         printf("proximoPilha: %d\n",proximoPilha);
-      
+
         fseek(arq,proximoPilha + sizeof(int),SEEK_SET); // Pulando para registro no offset de offsetProx
         fread(&tamAtual,sizeof(int),1,arq); // lendo primeiro int do registro (tamanho do registro)
-        
+
         fscanf(arq, "%[^|]s",NomeAux);//restante do titulo
         fseek(arq,sizeof(char),SEEK_CUR); // |
         fscanf(arq, "%[^|]s",NomeAux); // autor
@@ -193,18 +159,19 @@ int byteoffsetWorstFit(int tam_reg, int *valorInsuf){
         fread(&proximoPilha,sizeof(int),1,arq); // como eh um arquivo removido, contém o proximo topo da pilha e não o ano
         printf("tamAtual: %d\n",tamAtual);
         if(tamAtual >= MaiorTam)
-        {   
+        {
             MaiorTam = tamAtual;
             anterior = anteriorPilha;
-            anteriorPilha = topoPilha;            
-            topoPilha = proximoPilha;    
+            anteriorPilha = topoPilha;
+            topoPilha = proximoPilha;
         }
    }
-  printf("MaiorTam: %d\n",MaiorTam );
+
+//Para arrumar a pilha
+   printf("Maior %d\n",MaiorTam);
    if (MaiorTam >= tam_reg){
 
-        fseek(arq, anterior + sizeof(int), SEEK_SET);// acessar o ultimo que chamou   
-        //busca o endereço para o proximo que esta na pilha
+        fseek(arq, anterior + sizeof(int), SEEK_SET);// acessar o ultimo que chamou
         fread(&tamAtual,sizeof(int),1,arq);
         fscanf(arq,"%[^|]s",NomeAux);//restante do titulo
         fseek(arq,sizeof(char),SEEK_CUR); // |
@@ -212,43 +179,31 @@ int byteoffsetWorstFit(int tam_reg, int *valorInsuf){
         fseek(arq,sizeof(char),SEEK_CUR); // |
         fscanf(arq, "%[^|]s",NomeAux); // Editora
         fseek(arq,sizeof(char),SEEK_CUR); // |
-        fread(&proxRemovido,sizeof(int),1,arq);
 
-       
-        if ((MaiorTam - tam_reg) < 12)// só insere se for maior que doze(devido a tam*|||byteoffset)
-        {              
+        printf("anterior, anteriorPilha, topoPilha, proximoPilha %d %d %d %d\n",anterior,anteriorPilha,topoPilha,proximoPilha );
+        if (topoPilha != -1)
+            fwrite(&topoPilha,sizeof(int),1,arq);
 
-            if (topoPilha != -1)         
-                fwrite(&topoPilha,sizeof(int),1,arq);
-                   
-            else
-                setTopo(-1);
-
-            *valorInsuf = EscrevetamanhoOriginal;
-            return anteriorPilha;
+        else if(topoPilha == -1)
+        {
+            fseek(arq, anteriorPilha + sizeof(int), SEEK_SET);// acessar o ultimo que chamou
+            fread(&tamAtual,sizeof(int),1,arq);
+            fscanf(arq,"%[^|]s",NomeAux);//restante do titulo
+            fseek(arq,sizeof(char),SEEK_CUR); // |
+            fscanf(arq, "%[^|]s",NomeAux); // autor
+            fseek(arq,sizeof(char),SEEK_CUR); // |
+            fscanf(arq, "%[^|]s",NomeAux); // Editora
+            fseek(arq,sizeof(char),SEEK_CUR); // |
+            fwrite(&topoPilha,sizeof(int),1,arq);
         }
         else
-        {   
- 
-            fseek(arq,(2*sizeof(int) + anterior + tam_reg), SEEK_SET);
-            diferenca = MaiorTam - tam_reg - 2*sizeof(int); // sizeof(int) desconta o tamanho
-            printf("diferenca: %d\n",diferenca);
-            fwrite(&diferenca,sizeof(int),1,arq);        
-            fwrite(&removido,sizeof(char),1,arq);
-            fwrite(&c,sizeof(char),1,arq);
-            fwrite(&c,sizeof(char),1,arq);
-            fwrite(&c,sizeof(char),1,arq);
-            fwrite(&proxRemovido,sizeof(int),1,arq);
-    
-            setTopo(anterior + tam_reg + sizeof(int));        
-            fclose(arq);
-            return anteriorPilha;
-        }        
-        printf("anterior, anteriorPilha, topoPilha, proximoPilha %d %d %d %d\n",anterior,anteriorPilha,topoPilha,proximoPilha );
-        
+            setTopo(-1);
+
+        fclose(arq);
+        return anteriorPilha;
     }
 fclose(arq);
-return -1;         
+return -1;
 }
 
 int Tamanho_Arquivos()
@@ -259,7 +214,7 @@ int Tamanho_Arquivos()
     int i;
     char NomeAux[50];
     fseek(arq,sizeof(int),SEEK_SET);
-  
+
     while(1)
     {
         fread(&i,sizeof(int),1,arq);
@@ -268,7 +223,7 @@ int Tamanho_Arquivos()
         fscanf(arq, "%[^|]s",NomeAux);
         i-=strlen(NomeAux);
         if(NomeAux[0] != '*')
-        {       
+        {
             fseek(arq,i,SEEK_CUR);
             tam++;
         }
@@ -278,14 +233,13 @@ int Tamanho_Arquivos()
 }
 
 void InsereUmLivro(FILE *arq,Livro L)
-{   
-    int valorInsuf = 0; 
-    int byteoffset = byteoffsetWorstFit(reglen(L), &valorInsuf);
-    escreveRegistro(arq,L,byteoffset,valorInsuf);
+{
+    int byteoffset = byteoffsetWorstFit(reglen(L)); //Retorna -1 se nenhum registro deletado for maior que o passado (ou nao houver reg. deletado)
+    escreveRegistro(arq,L,byteoffset);
 }
 
 void Insere(){
-    
+
     FILE *arq = fopen("BD_livros2.bin", "rb+");
     if(arq == NULL)
     printf("Erro ao abrir arquivo!!!");
@@ -293,7 +247,7 @@ void Insere(){
     char op = 's';
    // fseek(arq, sizeof(int), SEEK_SET); // pula o cabeçalho da pilha
     while(op == 's' || op == 'S'){
-                
+
         Ler_dados_livro(&L);
         InsereUmLivro(arq,L);
         printf("Registrar mais um Livro? (S/N)\n");
@@ -305,60 +259,52 @@ void Insere(){
 
             printf("Opcao Invalida!!\n");
             fflush(stdin);
-            
+
             scanf("%c", &op);
         }
-    
+
     }
-fclose(arq);    
+fclose(arq);
 
 }
 
 void Listar()
-{   
-    
+{
+
     FILE *arq;
     arq = fopen("BD_livros2.bin", "rb");
     char opc = 's';
     Livro lv;
     char st[100];
     int tam;
-    int tamRegistro;
-    int auxi,flag = 0,aux;
+    int auxi,flag = 0;
     float auxf;
     fseek (arq , sizeof(int) , SEEK_SET); // pula o cabeçalho
     fread(&tam,sizeof(int),1,arq);
-  
     if (feof(arq))
     {
         printf("Arquivo vazio.");
     }
-    else while(opc!= 'n')
-    {    
-        printf("TA: %d\n",tam);
-        tamRegistro = 0; 
+    else while(opc!='n')
+    {
+
         fscanf(arq,"%[^|]s",st);
-        printf("st[0]= %c\n",st[0]);
-        if( st[0] == '*')
-        {              
-            fseek(arq,-strlen(st),SEEK_CUR);       
-            fseek(arq,tam,SEEK_CUR);       
+        /*if( st[0] == '*' )
+        {
+            fseek(arq, tam-strlen(st), SEEK_CUR);
             flag = 1;
-        }
-        else
-        {               
-            printf("\n|***Livro***|\n\n");   
+        }*/
+        //else
+        //{
+            printf("\n|***Livro***|\n\n");
             printf("TITLE : %s\n",st);
-            tamRegistro +=strlen(st) + 1; 
             fseek (arq, sizeof(char), SEEK_CUR);
 
             fscanf(arq,"%[^|]s",st);
-            tamRegistro +=strlen(st) + 1;
             printf("AUTHOR : %s\n",st);
             fseek (arq, sizeof(char), SEEK_CUR);
 
             fscanf(arq,"%[^|]s",st);
-            tamRegistro +=strlen(st) + 1;
             printf("PUBLISHER : %s\n",st);
             fseek (arq, sizeof(char), SEEK_CUR);
 
@@ -366,7 +312,6 @@ void Listar()
             printf("YEAR : %d\n",auxi);
 
             fscanf(arq,"%[^|]s",st);
-            tamRegistro +=strlen(st) + 1;
             printf("LANGUAGE : %s\n",st);
             fseek (arq, sizeof(char), SEEK_CUR);
 
@@ -375,32 +320,28 @@ void Listar()
 
             fread(&auxf,sizeof(float),1,arq);
             printf("PRICE : %.2f\n",auxf);
-            tamRegistro += 2*sizeof(int) + sizeof(float); // tamanho do registro
-            
-            fseek(arq,(tam - tamRegistro),SEEK_CUR);
 
-       }
-       fread(&tam,sizeof(int),1,arq);
+        //}
+
+        fread(&tam,sizeof(int),1,arq);
         if (feof(arq))
         {
             printf("\nA lista de livros terminou.\n");
             break;
         }
         else
-        {   
+        {
             if (flag == 0) // para não aparecer esse menu quando algum registro for removido
             {
-                
+
                 printf("\nDeseja continuar listando(s/n)?\n");
                 fflush_in();// função para limpar o teclado
                 scanf("%c",&opc);
                 setbuf(stdin,NULL);
-                
-            }else 
-                flag = 0; 
+
+            }else
+                flag = 0;
         }
-        
-  
     }
     fclose(arq);
 }
@@ -409,7 +350,6 @@ void Pesquisa_ano(int Ano_procurado)
 {
 
     FILE *arq;
-    int tam;
     int tamRegistro;
     char remLogica = '0'; //teste
     char registro[100],aux[50];
@@ -424,7 +364,7 @@ void Pesquisa_ano(int Ano_procurado)
         exit(0);
     }
 
-    fseek(arq,sizeof(int),SEEK_SET); // pula o conteÃºdo relacionado ao topo da pilha 
+    fseek(arq,sizeof(int),SEEK_SET); // pula o conteÃºdo relacionado ao topo da pilha
     if (feof(arq))
     {
         printf("Arquivo vazio.");
@@ -432,92 +372,197 @@ void Pesquisa_ano(int Ano_procurado)
         return;
     }
 
-    while(fread(&tam,sizeof(int),1,arq) == 1) // ler o tamanho
-    {         
+    while(fread(&tamRegistro,sizeof(int),1,arq) == 1) // ler o tamanho
+    {
+
+
         fscanf(arq,"%[^|]s",aux); //Title
         if(aux[0] == '*' )
-        {   
-        
-            fseek(arq,tam -strlen(aux), SEEK_CUR);
-            fseek(arq,tam, SEEK_CUR);
-        }      
+        {
+            fseek(arq, tamRegistro-strlen(aux), SEEK_CUR);
+        }
         else
-        {            
-            tamRegistro = 0;
-            tamRegistro+= strlen(aux) +1;
-            strcpy(registro,aux); 
-            strcat(registro,separador);     
+        {
+            //fseek(arq,sizeof(int),SEEK_CUR); // pula o byteoffset
+            strcpy(registro,aux);
+            strcat(registro,separador);
             fseek (arq,sizeof(char), SEEK_CUR);
             fscanf(arq,"%[^|]s",aux); // autor
-            tamRegistro+= strlen(aux) +1;
-            strcat(registro,aux); 
-            strcat(registro,separador);
-           
-            fseek (arq,sizeof(char), SEEK_CUR);
-            fscanf(arq,"%[^|]s",aux); // Editora
-            tamRegistro+= strlen(aux) +1;
-            strcat(registro,aux); 
-            strcat(registro,separador);
-
-           
-            fseek (arq,sizeof(char), SEEK_CUR);
-            fread(&ano,sizeof(int),1,arq); //ano
-           
-            fscanf(arq,"%[^|]s",aux); // linguagem
-            tamRegistro+= strlen(aux) + 1;
             strcat(registro,aux);
             strcat(registro,separador);
-           
+
             fseek (arq,sizeof(char), SEEK_CUR);
-            fread(&pagina,sizeof(int),1,arq);  // preco         
-            fread(&preco,sizeof(float),1,arq); 
-      
-            tamRegistro+= 2*sizeof(int) + sizeof(float); // para tratar o caso em que foi inserido no lugar de um removido
-            fseek(arq, (tam-tamRegistro),SEEK_CUR);            
+            fscanf(arq,"%[^|]s",aux); // Editora
+            strcat(registro,aux);
+            strcat(registro,separador);
+
+
+            fseek (arq,sizeof(char), SEEK_CUR);
+            fread(&ano,sizeof(int),1,arq); //ano
+
+            fscanf(arq,"%[^|]s",aux); // linguagem
+            strcat(registro,aux);
+            strcat(registro,separador);
+
+            fseek (arq,sizeof(char), SEEK_CUR);
+            fread(&pagina,sizeof(int),1,arq);  // preco
+            fread(&preco,sizeof(float),1,arq);
 
             if (ano == Ano_procurado)
             {
-              printf("\n|***Livro***|\n\n");    
-              printf("Titulo : %s\n", (char*)strtok(registro,"|")); // percorre o registro 
+              printf("\n|***Livro***|\n\n");
+              printf("Titulo : %s\n", (char*)strtok(registro,"|")); // percorre o registro
               printf("Autor : %s\n", (char*)strtok(NULL,"|"));
               printf("Editora : %s\n", (char*)strtok(NULL,"|"));
               printf("Linguagem : %s\n", (char*)strtok(NULL,"|"));
               printf("Ano: %d\nPagina: %d\nPreco: %0.2f\n\n\n",ano,pagina,preco);
               flag = 1;
-            }          
+            }
         }
     }
-    if (flag == 0) 
+    if (flag == 0)
         printf("NAO EXISTE NENHUM LIVRO COM ESSE ANO!\n\n");
     fclose(arq);
 }
 
+void Remove_registro(int byteoffset)
+{
+    FILE *arq;
+    int tamRegistro,topo;
+    char aux[50],removido = '*';
+    arq = fopen("BD_livros2.bin","rb+");     // tratar erro
+
+    fseek (arq,sizeof(int),SEEK_SET); // pula cabecalho da pilha
+
+    fseek(arq,byteoffset,SEEK_CUR);
+    fread(&tamRegistro,sizeof(int),1,arq); // ler o tamanho
+    printf("TaRemovido: %d\n",tamRegistro );
+    fwrite(&removido,sizeof(char),1,arq);
+    fscanf(arq,"%[^|]s",aux); //restante do titulo
+    fseek (arq,sizeof(char), SEEK_CUR);
+    fscanf(arq,"%[^|]s",aux); // autor
+    fseek (arq,sizeof(char), SEEK_CUR);
+    fscanf(arq,"%[^|]s",aux); // editora
+    fseek (arq,sizeof(char),SEEK_CUR);
+
+    topo = getTopo();
+    fwrite(&topo,sizeof(int),1,arq); // salva o topo da pilha no ano
+    setTopo(byteoffset);
+
+    fclose(arq);
+}
 
 
+Livro * ResgatarRegistro(int ByteOffSet){
+    int tamanhoRegistro;
+    char Auxiliar[100];
+    FILE  * Arquivo;
+    Livro * Registro;
 
+    Registro = (Livro *) malloc(sizeof(Livro));
 
+    Arquivo = fopen("BD_livros2.bin", "rb+");
 
+    // Pula o topo
+    fseek (Arquivo, sizeof(int), SEEK_SET);
+    // Pula para a posição do registro requisitado
+    fseek(Arquivo, ByteOffSet, SEEK_CUR);
+    // Tamanho
+    fread(&tamanhoRegistro, sizeof(int), 1, Arquivo);
 
+    // Título
+    fscanf(Arquivo,"%[^|]s", Auxiliar);
+    Registro->TITLE = (char *) malloc(sizeof(char) * strlen(Auxiliar));
+    strcpy(Registro->TITLE, Auxiliar);
+    fseek (Arquivo, sizeof(char), SEEK_CUR);
 
+    // Autor
+    fscanf(Arquivo,"%[^|]s", Auxiliar);
+    Registro->AUTHOR = (char *) malloc(sizeof(char) * strlen(Auxiliar));
+    strcpy(Registro->AUTHOR, Auxiliar);
+    fseek (Arquivo, sizeof(char), SEEK_CUR);
 
+    // Editora
+    fscanf(Arquivo,"%[^|]s", Auxiliar);
+    Registro->PUBLISHER = (char *) malloc(sizeof(char) * strlen(Auxiliar));
+    strcpy(Registro->PUBLISHER, Auxiliar);
+    fseek (Arquivo, sizeof(char), SEEK_CUR);
 
+    // Ano
+    fread(&Registro->YEAR, sizeof(int), 1, Arquivo);
 
+    // Linguagem
+    fscanf(Arquivo,"%[^|]s", Auxiliar);
+    Registro->LANGUAGE = (char *) malloc(sizeof(char) * strlen(Auxiliar));
+    strcpy(Registro->LANGUAGE, Auxiliar);
+    fseek (Arquivo, sizeof(char), SEEK_CUR);
 
+    // Páginas
+    fread(&Registro->PAGES, sizeof(int), 1, Arquivo);
 
+    // Preço
+    fread(&Registro->PRICE, sizeof(float), 1, Arquivo);
 
+    // Fecha o arquivo
+    fclose(Arquivo);
 
+    return Registro;
+}
 
+void ListarLivro(Livro * L){
+    printf("\nTitulo   : %s",   L->TITLE);
+    printf("\nAutor    : %s",   L->AUTHOR);
+    printf("\nEditora  : %s",   L->PUBLISHER);
+    printf("\nAno      : %d",   L->YEAR);
+    printf("\nLinguagem: %s",   L->LANGUAGE);
+    printf("\nPaginas  : %d",   L->PAGES);
+    printf("\nPreco    : %.2f", L->PRICE);
+}
 
+void Pesquisar(List * ListaDeAutores, char * Nome){
 
+}
 
+void PesquisarPeloAutorOuPelaEditora(List * ListaDeAutores, List * ListaDeEditoras, char * Autor, char * Editora){}
 
+void PesquisarPeloAutorEPelaEditora(List * ListaDeAutores, List * ListaDeEditoras, char * Autor, char * Editora){}
 
+void  OrganizaRemocao(List * ListaDeSecundarios, List * ListaDeSecundariosExtensao, char * Nome){
+    NoLista * No = BuscarLista(ListaDeSecundarios, (FuncaoComparacao) ComparaNomeNasListas, Nome);
+    Livro   * L;
+    char Escolha;
 
+    if (No == False){
+        printf("\n%s nao encontrado(a).\n", Nome);
+        return;
+    }
 
+    BlocoDoSecundario * BlocoSecundario;
+    BlocoDaInvertida  * BlocoInvertida;
 
+    BlocoSecundario = No->Info;
+    No = BlocoSecundario->ListaInvertida->Primeiro;
 
-
-
-
-
-
+    printf("\n\nSerao listados um a um todos os registros encontrados.");
+    printf("\nEscolha aquele a remover.\n");
+    while (No != NULL){
+        BlocoInvertida = No->Info;
+        L = ResgatarRegistro(BlocoInvertida->ByteOffSet);
+        ListarLivro(L);
+        EscolhaRemocao:
+            printf("\n\nRemover? (S/N)\nResposta: ");
+            scanf("%c", &Escolha);
+            fflush_in();
+            switch (Escolha){
+                case 'S': case 's':
+                    Remove_registro(BlocoInvertida->ByteOffSet);
+                    RemoverIndiceSecundario(ListaDeSecundarios, Nome, BlocoInvertida->ByteOffSet);
+                    RemoverIndiceSecundario(ListaDeSecundariosExtensao, L->PUBLISHER, BlocoInvertida->ByteOffSet  );
+                    printf("\n\n|Livro Removido!|\n\n");
+                    break;
+                case 'N': case 'n': break;
+                default: goto EscolhaRemocao;
+            }
+        No = No->Proximo;
+    }
+}
