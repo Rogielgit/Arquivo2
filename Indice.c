@@ -8,7 +8,7 @@ int ComparaNomeNasListas( NoLista * A, char * B ){
     // Validade dos Argumentos
     if (A == NULL || B == NULL)
         return ArgumentoInvalido;
-
+ 
     BlocoDoSecundario * BlocoSecundario;
     BlocoSecundario = A->Info;
     // Retorna verdadeiro se corresponde

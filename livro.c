@@ -4,7 +4,7 @@
 #include <string.h>
 #include "livro.h"
 
-void fflush_in(){// função para limpar o teclado
+void fflush_in(){// função para limpar o teclado 
 
     getchar();
 }

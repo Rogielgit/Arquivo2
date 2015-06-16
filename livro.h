@@ -5,7 +5,7 @@
 
 #define EscrevetamanhoOriginal  -2
 
-typedef struct {
+typedef struct { 
     char *TITLE;
     char *AUTHOR;
     char *PUBLISHER;

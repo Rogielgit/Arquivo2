@@ -9,7 +9,7 @@ List * CriaLista(){
     return Lista;
 }
 
-int DestroiLista(List * Lista){
+int DestroiLista(List * Lista){ 
     // Validade do Argumento
     if (Lista == NULL)
         return ArgumentoInvalido;

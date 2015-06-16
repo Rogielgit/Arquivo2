@@ -7,7 +7,7 @@
 int main()
 {
     FILE *arq;
-    char Autor[30],Editora[30];
+    char Autor[30],Editora[30]; 
 
     List *segAutor,*segEditora;
   //Indice aut_ind,edi_ind;
