@@ -6,12 +6,19 @@
 
 int main()
 {
+    List * IndiceSecundarioAutor;
+    List * IndiceSecundarioEditora;
+
+    IndiceSecundarioAutor   = CriaIndiceAutor();
+    IndiceSecundarioEditora = CriaIndiceEditora();
+
     FILE *arq;
-    char Autor[30],Editora[30]; 
+    int ano;
+    char Autor[30],Editora[30];
 
     List *segAutor,*segEditora;
   //Indice aut_ind,edi_ind;
-  
+
    //aut_ind.tam=-1;
     //guardar no arquivo a quantidade de registro salvo.
     //verifica se arquivo existe, se não existir cria e coloca topo = -1
@@ -27,7 +34,7 @@ int main()
     int tamanho =0 ;
 
     char op='s';
-  
+
     while( op != '9' )
     {
         tamanho =Tamanho_Arquivos();
@@ -51,88 +58,61 @@ int main()
         printf("7-Pesquisa Autor ou Editora\n");
         printf("8-Remove\n");
         printf("9-Sair\n\n\n");
-
-
-  //printf("Topo pilha %d\n",getTopo());
         printf("Opcao Desejada: ");
         setbuf(stdin,NULL);
         scanf(" %c",&op);
         ///criar o indice somente quando chegar a 10.
-
-
-        if (op == '1')
-        {   
-            setbuf(stdin,NULL);
-            Livro L;
-         //   Ler_dados_livro(&L);
-           // InsereUmLivro(L);
-            Insere();
-            tamanho =Tamanho_Arquivos();
-        }
-        else if(op == '2')
-        {
-            int ano;
-            printf("Ano: ");
-            scanf("%d",&ano);
-            setbuf(stdin,NULL);
-            Pesquisa_ano(ano);
-
-        }
-        else if(op == '3')
-        {  
-            Listar();
-        }
-        else if(op == '4')
-        {
-            scanf("%s",Autor);
-            //chamar função
-        }
-        else if(op == '5')
-        {
-             scanf("%s",Editora);
-        }
-        else if(op == '6')
-        {   
-            printf("Autor: ");
-            scanf("%s",Autor);
-            printf("Editora: ");
-            scanf("%s",Editora);
-
-        }
-        else if(op == '7')
-        {
-            printf("Autor: ");
-            scanf("%s",Autor);
-            printf("Editora: ");
-            scanf("%s",Editora);
-        }
-        else if(op == '8')
-        {
-            Remove_registro(0);
-            //Remove_registro(25);
-            //Remove_registro(48);          
+        switch (op){
+            case '1':
+                setbuf(stdin,NULL);
+                Livro L;
+                // Ler_dados_livro(&L);
+                // InsereUmLivro(L);
+                Insere();
+                tamanho =Tamanho_Arquivos();
+                break;
+            case '2':
+                printf("Ano: ");
+                scanf("%d",&ano);
+                setbuf(stdin,NULL);
+                Pesquisa_ano(ano);
+                break;
+            case '3':
+                Listar();
+                break;
+            case '4':
+                fflush_in();
+                printf("Autor: ");
+                scanf("%[^\n]%*c", Autor);
+                Pesquisar(IndiceSecundarioAutor, Autor);
+                break;
+            case '5':
+                fflush_in();
+                printf("Editora: ");
+                scanf("%[^\n]%*c", Editora);
+                Pesquisar(IndiceSecundarioEditora, Editora);
+                break;
+            case '6':
+                printf("Autor: ");
+                scanf("%[^\n]%*c", Autor);
+                printf("Editora: ");
+                scanf("%[^\n]%*c", Editora);
+                PesquisarPeloAutorEPelaEditora(IndiceSecundarioAutor, IndiceSecundarioEditora, Autor, Editora);
+                break;
+            case '7':
+                printf("Autor: ");
+                scanf("%[^\n]%*c", Autor);
+                printf("Editora: ");
+                scanf("%[^\n]%*c", Editora);
+                PesquisarPeloAutorOuPelaEditora(IndiceSecundarioAutor, IndiceSecundarioEditora, Autor, Editora);
+                break;
+            case '8':
+                printf("Autor: ");
+                scanf("%[^\n]%*c", Autor);
+                OrganizaRemocao(IndiceSecundarioAutor, IndiceSecundarioEditora, Autor);
+                break;
         }
         setbuf(stdin,NULL);
     }
-
-
-
     return 0;
-
-
-/*
-    List * Lista;
-    Lista = CriaLista();
-    InserirLista(Lista, 2);
-    InserirLista(Lista, 1);
-    InserirLista(Lista, 3);
-    Ordena(&Lista->Primeiro, (FuncaoComparacao) ComparaChavePrimaria);
-    printf("%d", Lista->Primeiro->Proximo->Info);
-    RemoverLista(Lista, (FuncaoComparacao) ComparaChave, 2);
-    printf("%d", Lista->Primeiro->Proximo->Info);
- 
-
-*/
-
-
 }
