@@ -53,7 +53,7 @@ int main()
         printf("9-Sair\n\n\n");
 
 
-  printf("Topo pilha %d\n",getTopo());
+  //printf("Topo pilha %d\n",getTopo());
         printf("Opcao Desejada: ");
         setbuf(stdin,NULL);
         scanf(" %c",&op);
@@ -109,13 +109,10 @@ int main()
         else if(op == '8')
         {
             Remove_registro(0);
-            Remove_registro(25);
-            //Remove_registro(48);
-
-           
+            //Remove_registro(25);
+            //Remove_registro(48);          
         }
         setbuf(stdin,NULL);
-
     }
 
 

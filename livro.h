@@ -3,7 +3,7 @@
 #define SUCESSO 1
 #include "Lista.h"
 
-
+#define EscrevetamanhoOriginal  -2
 
 typedef struct {
     char *TITLE;
@@ -16,6 +16,8 @@ typedef struct {
 
 }Livro;
 
+
+void Remove_registro(int byteoffset);
 
 void fflush_in();// função para limpar o teclado
 
@@ -31,7 +33,7 @@ void InsereUmLivro(FILE *,Livro);
 
 void Insere();
 
-void Remove_registro(int byteoffset);
+
 
 int reglen(Livro);
 
@@ -43,7 +45,7 @@ void setTopo(int value);
 
 int getTopo();
 
-void escreveRegistro(FILE*,Livro,int);
+void escreveRegistro(FILE*,Livro,int, int);
 
 void Pesquisa_autor(List *, char *);
 
