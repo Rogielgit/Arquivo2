@@ -312,8 +312,8 @@ void Insere(){
 }
 
 void Listar()
-{
-
+{   
+    
     FILE *arq;
     arq = fopen("BD_livros2.bin", "rb");
     char opc = 's';
@@ -323,30 +323,30 @@ void Listar()
     int tamRegistro;
     int auxi,flag = 0,aux;
     float auxf;
-    fseek (arq , sizeof(int) , SEEK_SET); // pula o cabe?alho
+    fseek (arq , sizeof(int) , SEEK_SET); // pula o cabeçalho
     fread(&tam,sizeof(int),1,arq);
-
+  
     if (feof(arq))
     {
         printf("Arquivo vazio.");
     }
     else while(opc!= 'n')
-    {
-        printf("TA: %d\n",tam);
-        tamRegistro = 0;
+    {    
+       // printf("TA: %d\n",tam);
+        tamRegistro = 0; 
         fscanf(arq,"%[^|]s",st);
-        printf("st[0]= %c\n",st[0]);
+        //printf("st[0]= %c\n",st[0]);
         if( st[0] == '*')
-        {
-            fseek(arq,-strlen(st),SEEK_CUR);
-            fseek(arq,tam,SEEK_CUR);
+        {              
+            fseek(arq,-strlen(st),SEEK_CUR);       
+            fseek(arq,tam,SEEK_CUR);       
             flag = 1;
         }
         else
-        {
-            printf("\n|***Livro***|\n\n");
+        {               
+            printf("\n|***Livro***|\n\n");   
             printf("TITLE : %s\n",st);
-            tamRegistro +=strlen(st) + 1;
+            tamRegistro +=strlen(st) + 1; 
             fseek (arq, sizeof(char), SEEK_CUR);
 
             fscanf(arq,"%[^|]s",st);
@@ -373,7 +373,7 @@ void Listar()
             fread(&auxf,sizeof(float),1,arq);
             printf("PRICE : %.2f\n",auxf);
             tamRegistro += 2*sizeof(int) + sizeof(float); // tamanho do registro
-
+            
             fseek(arq,(tam - tamRegistro),SEEK_CUR);
 
        }
@@ -384,24 +384,23 @@ void Listar()
             break;
         }
         else
-        {
-            if (flag == 0) // para n?o aparecer esse menu quando algum registro for removido
+        {   
+            if (flag == 0) // para não aparecer esse menu quando algum registro for removido
             {
-
+                
                 printf("\nDeseja continuar listando(s/n)?\n");
-                fflush_in();// fun??o para limpar o teclado
+                fflush_in();// função para limpar o teclado
                 scanf("%c",&opc);
                 setbuf(stdin,NULL);
-
-            }else
-                flag = 0;
+                
+            }else 
+                flag = 0; 
         }
-
-
+        
+  
     }
     fclose(arq);
 }
-
 void Pesquisa_ano(int Ano_procurado)
 {
 
