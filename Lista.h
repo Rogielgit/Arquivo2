@@ -18,6 +18,9 @@ typedef struct{
     NoLista * Primeiro;
 } List;
 
+
+
+NoLista* UltimoNo(NoLista*);
 /**
  * @brief Cria uma Lista Ligada
  *

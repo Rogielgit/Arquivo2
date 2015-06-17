@@ -54,6 +54,10 @@ void  OrganizaRemocao(List *, List *, char *);
 
 int Tamanho_Arquivos();
 
+void Pesquisa_nome(char *);
+
+void Pesquisa_editora(char *);
+
 void adicionaNaContagemDeRegistros(int);
 
 Livro * ResgatarRegistro(int);

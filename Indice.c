@@ -68,7 +68,9 @@ int RemoverIndiceSecundario(List * ListaDeSecundarios, char * Nome, int ByteOffS
     return Result;
 }
 
-List * CriaIndiceAutor(){
+List * CriaIndiceAutor()
+{
+
     FILE * Arquivo;
     List * ListaDeSecundarios;
     ListaDeSecundarios = CriaLista();
@@ -90,17 +92,19 @@ List * CriaIndiceAutor(){
         caminha = Tamanho;
         fscanf(Arquivo,"%[^|]s", NomeTitulo); // ler o titulo
         fseek (Arquivo,sizeof(char), SEEK_CUR);
-        caminha -= strlen(NomeAutor);
+        caminha -= strlen(NomeTitulo);
 
         fscanf(Arquivo,"%[^|]s", NomeAutor); // ler Autor
 
         caminha -= strlen(NomeAutor);
         caminha -= 1;
 
-        if (NomeTitulo[0] != '*')
+        if (NomeTitulo[0] != '*'){
+            //printf("Nome : %s\n", NomeTitulo);
             InserirIndiceSecundario(ListaDeSecundarios, NomeAutor, ByteOffSet);
+        }
 
-        ByteOffSet += Tamanho;
+        ByteOffSet += Tamanho + sizeof(int);
         fseek(Arquivo, caminha, SEEK_CUR);
 
         fread(&Tamanho, sizeof(int), 1, Arquivo);
@@ -133,10 +137,11 @@ List * CriaIndiceEditora() // recebe tamanho do Arquivouivo , para caso ele j? s
     {
         if(feof(Arquivo))
             break;
+        
         caminha = Tamanho;
         fscanf(Arquivo,"%[^|]s", NomeTitulo); // ler o titulo
         fseek(Arquivo,sizeof(char),SEEK_CUR);
-        caminha -= strlen(NomeEditora) + 1;
+        caminha -= strlen(NomeTitulo) +1;
 
         fscanf(Arquivo,"%[^|]s",NomeEditora); // ler Autor
         fseek(Arquivo,sizeof(char),SEEK_CUR);
@@ -148,10 +153,14 @@ List * CriaIndiceEditora() // recebe tamanho do Arquivouivo , para caso ele j? s
         caminha -= strlen(NomeEditora);
         caminha -= 1; // |
 
-        if (NomeTitulo[0] != '*')
+        if (NomeTitulo[0] != '*'){
+           
             InserirIndiceSecundario(ListaDeSecundarios, NomeEditora, ByteOffSet);
+            
+        }
 
-        ByteOffSet += Tamanho;
+
+        ByteOffSet += Tamanho + sizeof(int);
         fseek(Arquivo, caminha ,SEEK_CUR);
 
         fread(&Tamanho, sizeof(int), 1, Arquivo);

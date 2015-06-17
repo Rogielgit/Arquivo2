@@ -4,23 +4,17 @@
 #include "livro.h"
 #include "Indice.h"
 
+
 int main()
 {
     List * IndiceSecundarioAutor;
     List * IndiceSecundarioEditora;
 
-    IndiceSecundarioAutor   = CriaIndiceAutor();
-    IndiceSecundarioEditora = CriaIndiceEditora();
 
     FILE *arq;
-    int ano;
+    int ano,flag=0;
     char Autor[30],Editora[30];
 
-  //Indice aut_ind,edi_ind;
-
-   //aut_ind.tam=-1;
-    //guardar no arquivo a quantidade de registro salvo.
-    //verifica se arquivo existe, se não existir cria e coloca topo = -1
     arq = fopen("BD_livros2.bin", "rb+");
     if( arq == NULL )
     {   printf("Entrou\n");
@@ -29,7 +23,7 @@ int main()
         fwrite(&aux,sizeof(int), 1, arq);
     }
     fclose(arq);
-
+  
     int tamanho =0 ;
 
     char op='s';
@@ -37,13 +31,7 @@ int main()
     while( op != '9' )
     {
         tamanho =Tamanho_Arquivos();
-        printf("Tam-agora %d\n",tamanho);
-        //se ainda não inicializou e tamanho > 10
-       /* if( tamanho>=10 && aut_ind.tam==-1)
-        {
-            //aut_ind = Cria_Indice_Autor(tamanho);
-            //edi_ind = Cria_Indice_Autor(tamanho);
-        }*/
+       
 
         printf("\n**************************\n");
         printf("           MENU\n");
@@ -60,13 +48,22 @@ int main()
         printf("Opcao Desejada: ");
         setbuf(stdin,NULL);
         scanf(" %c",&op);
-        fflush_in();
+      
+
+        if (tamanho >= 10 && flag == 0){
+
+            IndiceSecundarioAutor   = CriaIndiceAutor();
+            IndiceSecundarioEditora = CriaIndiceEditora();
+            flag=1;
+
+        }
         ///criar o indice somente quando chegar a 10.
         switch (op){
             case '1':
                 setbuf(stdin,NULL);
                 Insere();
                 tamanho = Tamanho_Arquivos();
+                flag =0;
                 break;
             case '2':
                 printf("Ano: ");
@@ -78,33 +75,58 @@ int main()
                 Listar();
                 break;
             case '4':
+
                 printf("Autor: ");
-                scanf("%[^\n]%*c", Autor);
-                Pesquisar(IndiceSecundarioAutor, Autor);
+                fflush_in();// função para limpar o teclado
+                scanf("%[^\n]s", Autor);
+               if (tamanho > 10)
+                    Pesquisar(IndiceSecundarioAutor, Autor);
+                else
+                    Pesquisa_nome(Autor);
+
+                
+                
                 break;
             case '5':
+                fflush_in();// função para limpar o teclado
                 printf("Editora: ");
-                scanf("%[^\n]%*c", Editora);
-                Pesquisar(IndiceSecundarioEditora, Editora);
+                scanf("%[^\n]s", Editora);
+                if (tamanho > 10)
+                    Pesquisar(IndiceSecundarioEditora, Editora);
+                else Pesquisa_editora(Editora);
                 break;
             case '6':
-                printf("Autor: ");
-                scanf("%[^\n]%*c", Autor);
-                printf("Editora: ");
-                scanf("%[^\n]%*c", Editora);
-                PesquisarPeloAutorUniaoEditora(IndiceSecundarioAutor, IndiceSecundarioEditora, Autor, Editora);
+                if (tamanho > 10){
+                    printf("Autor: ");
+                    fflush_in();// função para limpar o teclado
+                    scanf("%[^\n]s", Autor);
+                    printf("Editora: ");
+                    fflush_in();// função para limpar o teclado
+                    scanf("%[^\n]s", Editora);
+                    PesquisarPeloAutorUniaoEditora(IndiceSecundarioAutor, IndiceSecundarioEditora, Autor, Editora);
+                    
+                }else printf("Essa operacao nao eh permitida enquanto nao houver 10 registro%s\n");
                 break;
             case '7':
-                printf("Autor: ");
-                scanf("%[^\n]%*c", Autor);
-                printf("Editora: ");
-                scanf("%[^\n]%*c", Editora);
-                PesquisarPeloAutorIntersecaoEditora(IndiceSecundarioAutor, IndiceSecundarioEditora, Autor, Editora);
+
+                if (tamanho >= 10){
+                    printf("Autor: ");
+                    fflush_in();// função para limpar o teclado
+                    scanf("%[^\n]s", Autor);
+                    printf("Editora: ");
+                    fflush_in();// função para limpar o teclado
+                    scanf("%[^\n]s", Editora);
+                    PesquisarPeloAutorIntersecaoEditora(IndiceSecundarioAutor, IndiceSecundarioEditora, Autor, Editora);
+                }else printf("Essa operacao nao eh permitida enquanto nao houver 10 registro");
                 break;
             case '8':
-                printf("Autor: ");
-                scanf("%[^\n]%*c", Autor);
-                OrganizaRemocao(IndiceSecundarioAutor, IndiceSecundarioEditora, Autor);
+                if (tamanho >= 10){
+                    printf("Autor: ");
+                    fflush_in();// função para limpar o teclado
+                    scanf("%[^\n]s", Autor);
+                    OrganizaRemocao(IndiceSecundarioAutor, IndiceSecundarioEditora, Autor);
+                    flag = 0;
+                }else  printf("Essa operacao nao eh permitida enquanto nao houver 10 registro");
                 break;
         }
         setbuf(stdin,NULL);
